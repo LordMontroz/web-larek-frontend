@@ -343,10 +343,15 @@ ContentModal наследует функциональность от класс
 
 ```
 interface IBasket {
-	cardInstance: Card
-	template: HTMLElement
-	totalCost: string
-	counterTotalCost(): string
+	basket: HTMLElement;
+	basketPrice: HTMLElement;
+	cardBasketTemplate: HTMLTemplateElement;
+	cardsBasket: HTMLElement[];
+	basketList: HTMLElement;
+	basketModel: BasketModel;
+	counterTotalCost(basketCard:HTMLElement): void;
+	updateBasket(): void;
+	setCards(items: HTMLElement[]): void;
 }
 ```
 
@@ -354,14 +359,18 @@ interface IBasket {
 
 Поля:
 
-- cardInstance: Card - экземпляр класса Card
-- template : HTMLElement - шаблон модального окна с корзиной.
-- totalCost: string - общая стоимость корзины
+- basket: HTMLElement - корзина.
+- basketPrice: HTMLElement - общая стоимость корзины.
+- cardBasketTemplate: HTMLTemplateElement - шаблон корзины.
+- cardsBasket: HTMLElement[] - массив готовых карточек корзины.
+- basketList: HTMLElement - список для карточек.
+- basketModel: BasketModel - экземпляр класса BasketModel.
 
 Методы:
 
-- counterTotalCost(): string - метод для расчета общей стоимости корзины.Возвращает строку, представляющую общую стоимость корзины.
-
+- counterTotalCost(cardPrice: number): void - метод для расчета общей стоимости корзины.
+- setCards(items: HTMLElement[]): void - устанавливает карточки в корзину.
+- updateBasket(): void - обновляет содержимое корзины.
 
 ### Класс Form
 
@@ -490,6 +499,7 @@ interface IPage {
 	counter: HTMLElement
 	catalog: HTMLElement
 	pageWrapper: HTMLElement
+	basketButton: HTMLButtonElement
 	updateCounter(value: number): void
 	setCatalog(items: HTMLElement[]): void
 	lockPage(): void
@@ -504,6 +514,7 @@ interface IPage {
 - counter: HTMLElement - элемент HTML для отображения счётчика корзины.
 - catalog: HTMLElement[] - массив со всеми карточками.
 - pageWrapper: HTMLElement - оболочка контента страницы.
+- basketButton: HTMLButtonElement - кнопка открытия корзины.
 
 Методы:
 

@@ -1,15 +1,18 @@
-import { IPage } from '../types';
+import { IActions, IPage } from '../types';
 import { ensureElement } from '../utils/utils';
 
 export class Page implements IPage {
 	counter: HTMLElement;
 	catalog: HTMLElement;
 	pageWrapper: HTMLElement;
+	basketButton: HTMLButtonElement;
 
-	constructor() {
+	constructor(actions: IActions) {
 		this.counter = ensureElement('.header__basket-counter ');
 		this.catalog = ensureElement('.gallery');
 		this.pageWrapper = ensureElement('.page__wrapper');
+		this.basketButton = ensureElement<HTMLButtonElement>('.header__basket');
+		this.basketButton.addEventListener('click', actions.onClick);
 	}
 
 	updateCounter(): void {

@@ -14,9 +14,13 @@ export class Card extends Component<ProductItem> implements ICard {
 	button?: HTMLButtonElement;
 	actions: IActions;
 
-	constructor(container: HTMLTemplateElement, actions?: IActions) {
+	constructor(
+		container: HTMLTemplateElement,
+		actions?: IActions,
+		actionDelete?: IActions
+	) {
 		super(container);
-        this.actions = actions;
+		this.actions = actions;
 		this.container = cloneTemplate(container);
 		this.title = ensureElement<HTMLHeadingElement>(
 			'.card__title',
@@ -24,12 +28,12 @@ export class Card extends Component<ProductItem> implements ICard {
 		);
 		this.description = this.container.querySelector('.card__text');
 		this.image = this.container.querySelector('.card__image');
-		this.category = ensureElement<HTMLSpanElement>(
-			'.card__category',
-			this.container
-		);
+		this.category = this.container.querySelector('.card__category');
 		this.price = ensureElement<HTMLSpanElement>('.card__price', this.container);
-        this.button = this.container.querySelector('.gallery__item'); // поменять потом
+		this.button = this.container.querySelector('.basket__item-delete');
+		if(this.button) {
+		this.button.addEventListener('click',actionDelete.onClick)
+		}
 	}
 
 	render(data: ProductItem): HTMLElement {
