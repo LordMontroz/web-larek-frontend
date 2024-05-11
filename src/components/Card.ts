@@ -2,7 +2,6 @@ import { IBasketCardHandler, ICard, ICatalogCardHandler } from '../types/index';
 import { Component } from '../components/base/components';
 import { ProductItem } from '../types/index';
 import { ensureElement, cloneTemplate } from '../utils/utils';
-import { BasketModel } from './BasketModel';
 
 export class Card extends Component<ProductItem> implements ICard {
 	container: HTMLElement;
@@ -40,16 +39,16 @@ export class Card extends Component<ProductItem> implements ICard {
 		this.buttonAddToBasket = this.container.querySelector('.card__button');
 	}
 
-	updateAddToCartButton(
-		card: ProductItem,
-		previewCard: Card,
-		basketModel: BasketModel
+	updateAddToCardButton(
+		isProductInBasket: ProductItem,
+		isPreviewCardForCurrentProduct: boolean,
+		isProductNotPriceless: boolean
 	): void {
-		if (previewCard.title.textContent === card.title) {
-			if (basketModel.basketItems.find((item) => item.id === card.id)) {
+		if (isPreviewCardForCurrentProduct) {
+			if (isProductInBasket) {
 				this.buttonAddToBasket.setAttribute('disabled', 'true');
 				this.buttonAddToBasket.textContent = 'Данный продукт купить нельзя';
-			} else if (previewCard.title.textContent !== 'Мамка-таймер') {
+			} else if (isProductNotPriceless) {
 				this.buttonAddToBasket.removeAttribute('disabled');
 				this.buttonAddToBasket.textContent = 'В корзину';
 			}

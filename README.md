@@ -190,10 +190,11 @@ type ApiListResponse<Type> = {
 
 BasketModel отвечает за хранение данных корзины и предоставляет методы для работы с ней.
 
-Реализован на основе интерфейса и типов ProductItem, ApiListResponse<Type>, OrderDetails:
+Реализован на основе интерфейсов и типов ProductItem, ApiListResponse<Type>, OrderDetails:
 
 ```
 interface IBasketModel {
+	eventEmitter: EventEmitter
 	order: ApiListResponse<string> & OrderDetails
 	basketItems: ProductItem[]
 	addToBasket(item: ProductItem): void
@@ -202,6 +203,11 @@ interface IBasketModel {
 	getCardIndex(item: ProductItem): string
 	clearBasket(): void
 	getCardsIds(): void
+}
+```
+```
+interface IBasketModelHandler {
+	handleUpdateBasket: () => void;
 }
 ```
 
@@ -238,6 +244,7 @@ type OrderDetails = {
 
 - `basket: ProductItem[]` - Поле для хранения элементов корзины. Это массив объектов ProductItem, каждый из которых представляет товар в корзине.
 - `order: ApiListResponse<string> & OrderDetails` - полная информация о заказе.
+- `handler: IBasketModelHandler` - обработчик события обновления корзины.
 
 Методы:
 
@@ -249,6 +256,7 @@ type OrderDetails = {
 - private `addCardIdToOrder(item: ProductItem): void` - добавляет id карточки в заказ.
 - private `removeCardIdFromOrder(item: ProductItem): void` - удаляет id карточки из заказа.
 - private `clearOrder(): void` - очищает заказ.
+- private `updateBasketCards(): void` - обновляет карточки в корзине.
 
 #### Класс CatalogModel:
 
@@ -298,6 +306,11 @@ interface ICard {
 	index?: HTMLElement
 	handleCardOpen: ICatalogCardHandler
 	render(data: ProductItem): HTMLElement
+	updateAddToCardButton(
+		isProductInBasket: ProductItem,
+		isPreviewCardForCurrentProduct: boolean,
+		isProductNotPriceless: boolean
+	): void
 }
 ```
 
@@ -318,12 +331,14 @@ interface ICatalogCardHandler {
 - `category: HTMLSpanElement` - Категория карточки.
 - `price: HTMLSpanElement` - Цена карточки.
 - `button?: HTMLButtonElement` - Кнопка у карточки (необязательное).
+- `buttonAddToBasket?: HTMLButtonElement` - Кнопка для добавления карточки в корзину.
 - `index?: HTMLElement` - Индекс карточки (необязательное).
 - `handlerOpenCard: ICatalogCardHandler;` - Колбэк при клике.
 
 Методы:
 
 - `render(data: ProductItem): HTMLElement` - вовзращает готовую карточку.
+- `updateAddToCardButton( isProductInBasket: ProductItem, isPreviewCardForCurrentProduct: boolean, isProductNotPriceless: boolean): void` - обновляет текст и активность карточки добавления в корзину.
 
 ### Класс Modal:
 

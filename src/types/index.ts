@@ -76,6 +76,10 @@ export interface IBasketCardHandler {
 	handleCardDelete: () => void;
 }
 
+export interface IBasketModelHandler {
+	handleUpdateBasket: () => void;
+}
+
 export interface IWebLarekApi {
 	cdn: string;
 	getCardList(): Promise<ProductItem[]>;
@@ -106,8 +110,14 @@ export interface ICard {
 	category: HTMLSpanElement;
 	price: HTMLSpanElement;
 	button?: HTMLButtonElement;
+	buttonAddToBasket?: HTMLButtonElement;
 	index?: HTMLElement;
 	render(data: ProductItem): HTMLElement;
+	updateAddToCardButton(
+		isProductInBasket: ProductItem,
+		isPreviewCardForCurrentProduct: boolean,
+		isProductNotPriceless: boolean
+	): void;
 }
 
 export interface IModal {
