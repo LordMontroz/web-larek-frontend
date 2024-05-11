@@ -20,7 +20,7 @@ export class Success implements ISuccess {
 		this.button.addEventListener('click', handler.handleSuccessClose);
 	}
 
-	setOrderDescription(sum: HTMLElement): void {
-		this.orderSuccessDescription.textContent = `Списано ${sum.textContent}`;
+	setOrderDescription(sum: number): void {
+		this.orderSuccessDescription.textContent = `Списано ${sum} синапсов`;
 	}
 }

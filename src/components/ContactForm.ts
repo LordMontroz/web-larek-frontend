@@ -23,7 +23,10 @@ export class ContactForm implements IContactForm {
 			'.button',
 			this.contactFormContent
 		);
-		this.buttonPay.addEventListener('click', handlers.handleSuccessOpen);
+		this.contactFormContent.addEventListener(
+			'submit',
+			handlers.handleSuccessOpen
+		);
 		this.inputEmail.addEventListener(
 			'input',
 			handlers.handleToggleButtonActivity
@@ -70,10 +73,11 @@ export class ContactForm implements IContactForm {
 		}
 	}
 
-	ClearContactForms(): void {
+	clearContactForms(): void {
 		this.inputEmail.value = '';
 		this.inputPhone.value = '';
 		this.toggleButtonActivity();
+		this.error.textContent = '';
 	}
 
 	getInputEmailValue(): string {

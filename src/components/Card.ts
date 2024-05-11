@@ -12,8 +12,8 @@ export class Card extends Component<ProductItem> implements ICard {
 	price: HTMLSpanElement;
 	button?: HTMLButtonElement;
 	buttonAddToBasket?: HTMLButtonElement;
-	handleCardOpen: ICatalogCardHandler;
 	index?: HTMLElement;
+	handleCardOpen: ICatalogCardHandler;
 
 	constructor(
 		container: HTMLTemplateElement,

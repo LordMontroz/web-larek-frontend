@@ -66,6 +66,7 @@ export class DeliveryForm implements IDeliveryForm {
 	clearDeliveryForm(): void {
 		this.inputAddress.value = '';
 		this.toggleButtonActivity();
+		this.error.textContent = '';
 	}
 
 	getInputAddressValue(): string {

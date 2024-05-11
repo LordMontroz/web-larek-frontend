@@ -1,4 +1,4 @@
-import { IBasket, IBasketHandler, ProductItem } from '../types';
+import { IBasket, IBasketHandler } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 import { BasketModel } from './BasketModel';
 import { Component } from './base/components';
@@ -10,20 +10,17 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 	cardBasketTemplate: HTMLTemplateElement;
 	cardsBasket: HTMLElement[] = [];
 	basketList: HTMLElement;
-	basketModel: BasketModel;
 	basketButton: HTMLElement;
-	eventEmitter: EventEmitter;
+	basketModel: BasketModel;
 
 	constructor(
 		basketTemplate: HTMLTemplateElement,
 		basketModel: BasketModel,
-		handler: IBasketHandler,
-		eventEmitter: EventEmitter
+		handler: IBasketHandler
 	) {
 		super(cloneTemplate(basketTemplate));
 		this.cardBasketTemplate =
 			ensureElement<HTMLTemplateElement>('#card-basket');
-		this.eventEmitter = eventEmitter;
 		this.basketModel = basketModel;
 		this.basket = cloneTemplate(basketTemplate);
 		this.basketPrice = ensureElement('.basket__price', this.basket);
