@@ -13,7 +13,7 @@ export abstract class Modal implements IModal {
 		this.closeButton.addEventListener('click', this.actions.onClick);
 	}
 
-	show(): void {
+	show(content: HTMLElement): void {
 		this.container.classList.add('modal_active');
 	}
 	close(): void {

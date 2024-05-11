@@ -1,4 +1,7 @@
+import { Basket } from '../components/Basket';
 import { BasketModel } from '../components/BasketModel';
+import { ContentModal } from '../components/ContentModal';
+import { Page } from '../components/Page';
 import { ApiListResponse } from '../components/base/api';
 
 export type ProductItem = {
@@ -24,7 +27,10 @@ export interface IWebLarekApi {
 }
 
 export interface IBasketModel {
-	basket: ProductItem[];
+	basketItems: ProductItem[];
+	basket: Basket;
+	page: Page;
+	contentModal: ContentModal;
 	addToBasket(item: ProductItem): void;
 	removeFromBasket(item: ProductItem): void;
 	clearBasket(): void;
@@ -50,7 +56,7 @@ export interface ICard {
 export interface IModal {
 	container: HTMLElement;
 	closeButton: HTMLElement;
-	show(): void;
+	show(content: HTMLElement): void;
 	close(): void;
 }
 
@@ -58,9 +64,10 @@ export interface IContentModal {
 	content: HTMLElement;
 	modalContent: HTMLElement;
 	button: HTMLButtonElement;
-	setContent(content: HTMLElement): void;
+	page: Page;
+	show(content: HTMLElement): void;
+	close(): void;
 	setButton(button: HTMLButtonElement, actions: IActions): void;
-	clearModalContent(): void;
 }
 
 export interface IBasket {
@@ -86,6 +93,7 @@ export interface IContactForm {
 	inputEmail: HTMLInputElement;
 	inputPhone: HTMLInputElement;
 	buttonPay: HTMLButtonElement;
+	error: HTMLElement;
 	toggleButtonActivity(): void;
 }
 
@@ -95,7 +103,10 @@ export interface IDeliveryForm {
 	buttonCard: HTMLButtonElement;
 	buttonCash: HTMLButtonElement;
 	buttonNext: HTMLButtonElement;
+	error: HTMLElement;
 	toggleButtonActivity(): void;
+	toggleButtonCardActivity(): void;
+	toggleButtonCashActivity(): void;
 }
 
 export interface ISuccess {
@@ -111,7 +122,6 @@ export interface IPage {
 	pageWrapper: HTMLElement;
 	basketButton: HTMLButtonElement;
 	updateCounter(): void;
-	clearCounter(): void;
 	setCatalog(items: HTMLElement[]): void;
 	lockPage(): void;
 	unlockPage(): void;

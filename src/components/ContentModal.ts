@@ -1,25 +1,35 @@
 import { IActions, IContentModal } from '../types';
-import { cloneTemplate, ensureElement } from '../utils/utils';
-import { Component } from './base/components';
+import { ensureElement } from '../utils/utils';
+import { Page } from './Page';
 import { Modal } from './common/Modal';
 
-// надо наследовать component
 export class ContentModal extends Modal implements IContentModal {
 	content: HTMLElement;
 	modalContent: HTMLElement;
 	button: HTMLButtonElement;
+	page: Page;
 
-	constructor(modalContainer: HTMLElement, actions?: IActions) {
+	constructor(modalContainer: HTMLElement, page: Page, actions?: IActions) {
 		super(modalContainer, actions);
 		this.modalContent = ensureElement('.modal__content', modalContainer);
+		this.page = page;
 	}
 
-	show(): void {
+	show(content: HTMLElement): void {
+		this.clearModalContent();
+		this.setContent(content);
 		this.modalContent.append(this.content);
-		super.show();
+		super.show(content);
+		this.page.lockPage();
 	}
 
-	setContent(content: HTMLElement): void {
+	close(): void {
+		super.close();
+		this.page.unlockPage();
+		this.clearModalContent();
+	}
+
+	private setContent(content: HTMLElement): void {
 		this.content = content;
 	}
 
@@ -28,7 +38,7 @@ export class ContentModal extends Modal implements IContentModal {
 		this.button.addEventListener('click', actions.onClick);
 	}
 
-	clearModalContent(): void {
+	private clearModalContent(): void {
 		if (this.content && this.modalContent.contains(this.content)) {
 			this.modalContent.removeChild(this.content);
 		}

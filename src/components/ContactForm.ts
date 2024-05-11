@@ -6,6 +6,7 @@ export class ContactForm implements IContactForm {
 	inputEmail: HTMLInputElement;
 	inputPhone: HTMLInputElement;
 	buttonPay: HTMLButtonElement;
+    error: HTMLElement;
 
 	constructor(
 		contactFormTemplate: HTMLTemplateElement,
@@ -26,6 +27,7 @@ export class ContactForm implements IContactForm {
 		this.buttonPay.addEventListener('click', actionPay.onClick);
 		this.inputEmail.addEventListener('input', trackInput.onInput);
 		this.inputPhone.addEventListener('input', trackInput.onInput);
+        this.error = ensureElement('.form__errors', this.contactFormContent);
 	}
 
 	toggleButtonActivity(): void {
@@ -36,8 +38,10 @@ export class ContactForm implements IContactForm {
 			phoneRegex.test(this.inputPhone.value)
 		) {
 			this.buttonPay.removeAttribute('disabled');
+            this.error.textContent = '';
 		} else {
 			this.buttonPay.setAttribute('disabled', 'true');
+            this.error.textContent = 'Необходимо ввести корректные данные';
 		}
 	}
 }

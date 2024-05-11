@@ -46,18 +46,19 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 
 	updateBasket(): void {
 		this.cardsBasket = [];
-		this.cardsBasket = this.basketModel.basket.map((item: ProductItem) => {
+		this.cardsBasket = this.basketModel.basketItems.map((item: ProductItem) => {
 			const basketCard = new Card(this.cardBasketTemplate, undefined, {
 				onClick: () => this.eventEmitter.emit('Card:delete', item),
 			});
 			return basketCard.render(item);
 		});
 		this.setCards();
+        this.counterTotalCost();
 	}
 
 	counterTotalCost(): void {
 		let totalCost = 0;
-		this.basketModel.basket.forEach((item) => {
+		this.basketModel.basketItems.forEach((item) => {
 			totalCost += item.price;
 		});
 		this.basketPrice.textContent = `${totalCost} синапсов`;
