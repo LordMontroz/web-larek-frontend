@@ -40,8 +40,10 @@ const deliveryForm = new DeliveryForm(
 	{ onClick: () => eventEmitter.emit('Button-card:active') },
 	{ onClick: () => eventEmitter.emit('Button-cash:active') },
 	{ onInput: () => eventEmitter.emit('Input:change') },
-	{ onClick: () => eventEmitter.emit('ContactForm:open') }
+	{ onClick: () => eventEmitter.emit('ContactForm:open') },
+	webLarekApi
 );
+webLarekApi.deliveryForm = deliveryForm;
 const contactForm = new ContactForm(
 	contactsTemplate,
 	{
@@ -49,22 +51,33 @@ const contactForm = new ContactForm(
 	},
 	{
 		onInput: () => eventEmitter.emit('Input:triggered'),
-	}
+	},
+	webLarekApi
 );
+webLarekApi.contactForm = contactForm;
 const success = new Success(successTemplate, {
 	onClick: () => eventEmitter.emit('Success:close'),
 });
-const basketModel = new BasketModel(page, contentModal);
+webLarekApi.success = success;
+const basketModel = new BasketModel(
+	page,
+	contentModal,
+	deliveryForm,
+	contactForm
+);
 page.basketModel = basketModel;
+webLarekApi.basketModel = basketModel;
 
 const basket = new Basket(
 	basketTemplate,
 	basketModel,
+	webLarekApi,
 	{ onClick: () => eventEmitter.emit('DeliveryForm:open') },
 	eventEmitter
 );
 
 basketModel.basket = basket;
+webLarekApi.basket = basket;
 
 // Отображение всех карточек на странице.
 webLarekApi.getCardList().then((cards) => {
@@ -74,8 +87,10 @@ webLarekApi.getCardList().then((cards) => {
 		const catalogCard = new Card(catalogCardTemplate, {
 			onClick: () => eventEmitter.emit('Card:open', card),
 		});
+
 		return catalogCard.render(card);
 	});
+
 	page.setCatalog(renderedCards);
 });
 
@@ -91,6 +106,21 @@ eventEmitter.on('Card:open', (card: ProductItem) => {
 	contentModal.setButton(buttonAddToBasket, {
 		onClick: () => eventEmitter.emit('Basket:addItem', card),
 	});
+
+	if (previewCard.title.textContent === 'Мамка-таймер') {
+		buttonAddToBasket.setAttribute('disabled', 'true');
+		buttonAddToBasket.textContent = 'Данный продукт купить нельзя';
+	}
+
+	if (previewCard.title.textContent === card.title) {
+		if (basketModel.basketItems.find((item) => item.id === card.id)) {
+			buttonAddToBasket.setAttribute('disabled', 'true');
+			buttonAddToBasket.textContent = 'Данный продукт купить нельзя';
+		} else if (previewCard.title.textContent !== 'Мамка-таймер') {
+			buttonAddToBasket.removeAttribute('disabled');
+			buttonAddToBasket.textContent = 'В корзину';
+		}
+	}
 
 	contentModal.show(renderedPreviewCard);
 });
@@ -118,7 +148,6 @@ eventEmitter.on('Card:delete', (item: ProductItem) => {
 
 // Действие открытия модального окна с формой доставки.
 eventEmitter.on('DeliveryForm:open', () => {
-	deliveryForm.buttonCard.classList.toggle('button_alt-active');
 	contentModal.show(deliveryForm.deliveryFormContent);
 });
 
@@ -146,17 +175,17 @@ eventEmitter.on('ContactForm:open', () => {
 
 // Действие при изменении полей ввода почты и телефона.
 eventEmitter.on('Input:triggered', () => {
+	contactForm.addPhoneMask();
 	contactForm.toggleButtonActivity();
 });
 
 // Действие открытия модального окна с успешной покупкой.
 eventEmitter.on('Success:open', () => {
-	success.setOrderDescription(basket.basketPrice);
+	webLarekApi.orderPurchase();
 	contentModal.show(success.successContent);
 });
 
 // Действие закрытия модального окна с успешной покупкой.
 eventEmitter.on('Success:close', () => {
 	contentModal.close();
-	basketModel.clearBasket();
 });

@@ -146,13 +146,19 @@ _Архитектурный слой необходимый для хранен�
 Наследуется от Класса Api.
 WebLarekApi предназначен для получения данных карточек с сервера и отправки данных на сервер.
 
-Реализуется на основе интерфейса IWebLarekApi и типа ProductItem, который представляет структуру данных карточки:
+Реализуется на основе интерфейса IWebLarekApi и типов ProductItem, ApiListResponse<Type>, OrderDetails:
 
 ```
 interface IWebLarekApi {
 	cdn: string;
-	getCardList(): Promise<ProductItem[]>
-	orderPurchase(order: ApiListResponse<string>): void
+	order: ApiListResponse<string> & OrderDetails;
+	contactForm: ContactForm;
+	deliveryForm: DeliveryForm;
+	basket: Basket;
+	basketModel: BasketModel;
+	success: Success;
+	getCardList(): Promise<ProductItem[]>;
+	orderPurchase(): void;
 }
 ```
 
@@ -167,16 +173,39 @@ type ProductItem = {
 }
 ```
 
+```
+type ApiListResponse<Type> = {
+	total: number;
+	items: Type[];
+}
+```
+
+```
+type OrderDetails = {
+	payment: string;
+	email: string;
+	phone: string;
+	address: string;
+}
+```
+
 **Предоставляет поля и методы:**
 
 Поля:
 
 - `cdn: string` - используется для формирования полного пути к изображениям при их отображении в приложении.
+- `order: ApiListResponse<string> & OrderDetails` - полная информация о заказе.
+- `contactForm: ContactForm` - экземпляр класса ContactForm.
+- `deliveryForm: DeliveryForm` - экземпляр класса DeliveryForm.
+- `basket: Basket` - экземпляр класса Basket.
+- `basketModel: BasketModel` - экземпляр класса BasketModel.
+- `success: Success` - экземпляр класса Success.
 
 Методы:
 
 - `getCardList(): ProductItem[]` - Получает массив данных карточек с сервера и возвращает его. Каждый элемент массива представляет объект с данными карточки товара.
-- `orderPurchase(order: ApiListResponse<string>): void` - отправляет put-запрос на сервер с заказом.
+
+- `orderPurchase(): void` - отправляет put-запрос на сервер с заказом.
 
 ### Класс BasketModel:
 
@@ -255,6 +284,7 @@ interface ICard {
 	category: HTMLSpanElement
 	price: HTMLSpanElement
 	button?: HTMLButtonElement
+	index?: HTMLElement
 	actions: IActions
 	render(data: ProductItem): HTMLElement
 }
@@ -277,6 +307,7 @@ interface IActions {
 - `category: HTMLSpanElement` - Категория карточки.
 - `price: HTMLSpanElement` - Цена карточки.
 - `button?: HTMLButtonElement` - Кнопка у карточки (необязательное).
+- `index?: HTMLElement` - Индекс карточки (необязательное).
 - `actions: IActions` - Колбэк при клике.
 
 Методы:
@@ -376,7 +407,7 @@ interface IBasket {
 	basketModel: BasketModel;
 	basketButton: HTMLElement;
 	eventEmitter: EventEmitter;
-	counterTotalCost(basketCard:HTMLElement): void;
+	counterTotalCost(): number;
 	updateBasket(): void;
 	setCards(): void;
 	changeButtonActivity(): void;
@@ -398,7 +429,7 @@ interface IBasket {
 
 Методы:
 
-- `counterTotalCost(cardPrice: number): void` - метод для расчета общей стоимости корзины.
+- `counterTotalCost(): number` - метод для расчета общей стоимости корзины.
 - `setCards(): void` - устанавливает карточки в корзину.
 - `updateBasket(): void` - обновляет содержимое корзины.
 - `changeButtonActivity(): void` - меняет активность кнопки на основании содержимого.
@@ -416,7 +447,11 @@ interface IContactForm {
 	inputPhone: HTMLInputElement;
 	buttonPay: HTMLButtonElement;
 	error: HTMLElement;
-	toggleButtonActivity(): void
+	webLarekApi: WebLarekApi;
+	toggleButtonActivity(): void;
+	clearContactForms(): void;
+	addToOrder(): void;
+	addPhoneMask(): void;
 }
 ```
 
@@ -429,10 +464,18 @@ interface IContactForm {
 - `inputPhone: HTMLInputElement` - поле ввода номера телефона.
 - `buttonPay: HTMLButtonElement` - кнопка "Оплатить".
 - `error: HTMLElement` - элемент для показа текста ошибки.
+- `clearContactForms(): void` - очищает формы связи.
+- `webLarekApi: WebLarekApi` - экземпляр класса WebLarekApi.
 
 Методы:
 
 - `toggleButtonActivity(): void` - переключает активность кнопки "Оплатить" в зависимости от условий.
+
+- `addToOrder(): void` - добавляет данные форм в заказ.
+
+- `clearContactForms(): void` - очищает формы.
+
+- `addPhoneMask(): void` - добавляет маску в форму для ввода номера телефона.
 
 ### Класс DeliveryForm
 
@@ -448,8 +491,11 @@ interface IDeliveryForm {
 	buttonCash: HTMLButtonElement;
 	buttonNext: HTMLButtonElement;
 	error: HTMLElement;
-	toggleButtonActivity(): void
+	webLarekApi: WebLarekApi;
+	toggleButtonActivity(): void;
 	toggleButtonAltActivity(): void;
+	clearDeliveryForm(): void;
+	addToOrder(): void;
 }
 ```
 
@@ -463,6 +509,7 @@ interface IDeliveryForm {
 - `buttonCash: HTMLButtonElement` - кнопка "Оплата за наличные".
 - `buttonNext: HTMLButtonElement` - кнопка "Далее".
 - `error: HTMLElement` - элемент для показа текста ошибки.
+- `webLarekApi: WebLarekApi` - экземпляр класса WebLarekApi.
 
 Методы:
 
@@ -471,6 +518,10 @@ interface IDeliveryForm {
 - `toggleButtonCardActivity(): void` - переключает активность кнопки "Карта".
 
 - `toggleButtonCardActivity(): void` - переключает активность кнопки "Наличные".
+
+- `clearDeliveryForm(): void` - очищает форму доставки.
+
+- `addToOrder(): void` - добавляет данные кнопки и формы в заказ.
 
 ### Класс Success
 

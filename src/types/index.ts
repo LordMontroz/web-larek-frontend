@@ -1,8 +1,10 @@
 import { Basket } from '../components/Basket';
 import { BasketModel } from '../components/BasketModel';
+import { ContactForm } from '../components/ContactForm';
 import { ContentModal } from '../components/ContentModal';
+import { DeliveryForm } from '../components/DeliveryForm';
 import { Page } from '../components/Page';
-import { ApiListResponse } from '../components/base/api';
+import { Success } from '../components/Success';
 
 export type ProductItem = {
 	id: string;
@@ -10,7 +12,19 @@ export type ProductItem = {
 	image: string;
 	title: string;
 	category: string;
-	price: number;
+	price: number | null;
+};
+
+export type ApiListResponse<Type> = {
+	total: number;
+	items: Type[];
+};
+
+export type OrderDetails = {
+	payment: string;
+	email: string;
+	phone: string;
+	address: string;
 };
 
 export interface IActions {
@@ -22,8 +36,15 @@ export interface IActionInput {
 }
 
 export interface IWebLarekApi {
+	cdn: string;
+	order: ApiListResponse<string> & OrderDetails;
+	contactForm: ContactForm;
+	deliveryForm: DeliveryForm;
+	basket: Basket;
+	basketModel: BasketModel;
+	success: Success;
 	getCardList(): Promise<ProductItem[]>;
-	orderPurchase(order: ApiListResponse<string>): void;
+	orderPurchase(): void;
 }
 
 export interface IBasketModel {
@@ -50,6 +71,7 @@ export interface ICard {
 	category: HTMLSpanElement;
 	price: HTMLSpanElement;
 	button?: HTMLButtonElement;
+	index?: HTMLElement;
 	render(data: ProductItem): HTMLElement;
 }
 
@@ -77,7 +99,7 @@ export interface IBasket {
 	cardsBasket: HTMLElement[];
 	basketList: HTMLElement;
 	basketModel: BasketModel;
-	counterTotalCost(cardPrice: number): void;
+	counterTotalCost(): number;
 	updateBasket(): void;
 	setCards(items: HTMLElement[]): void;
 	changeButtonActivity(): void;
@@ -95,6 +117,8 @@ export interface IContactForm {
 	buttonPay: HTMLButtonElement;
 	error: HTMLElement;
 	toggleButtonActivity(): void;
+	addToOrder(): void;
+	addPhoneMask(): void;
 }
 
 export interface IDeliveryForm {
@@ -107,6 +131,7 @@ export interface IDeliveryForm {
 	toggleButtonActivity(): void;
 	toggleButtonCardActivity(): void;
 	toggleButtonCashActivity(): void;
+	addToOrder(): void;
 }
 
 export interface ISuccess {

@@ -2,6 +2,7 @@ import { IActions, IBasket, ProductItem } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 import { BasketModel } from './BasketModel';
 import { Card } from './Card';
+import { WebLarekApi } from './WebLarekApi';
 import { Component } from './base/components';
 import { EventEmitter } from './base/events';
 
@@ -14,10 +15,12 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 	basketModel: BasketModel;
 	basketButton: HTMLElement;
 	eventEmitter: EventEmitter;
+	webLarekApi: WebLarekApi;
 
 	constructor(
 		basketTemplate: HTMLTemplateElement,
 		basketModel: BasketModel,
+		webLarekApi: WebLarekApi,
 		actions: IActions,
 		eventEmitter: EventEmitter
 	) {
@@ -26,6 +29,7 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 			ensureElement<HTMLTemplateElement>('#card-basket');
 		this.eventEmitter = eventEmitter;
 		this.basketModel = basketModel;
+		this.webLarekApi = webLarekApi;
 		this.basket = cloneTemplate(basketTemplate);
 		this.basketPrice = ensureElement('.basket__price', this.basket);
 		this.basketList = ensureElement('.basket__list', this.basket);
@@ -50,18 +54,20 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 			const basketCard = new Card(this.cardBasketTemplate, undefined, {
 				onClick: () => this.eventEmitter.emit('Card:delete', item),
 			});
+			basketCard.basketModel = this.basketModel;
 			return basketCard.render(item);
 		});
 		this.setCards();
-        this.counterTotalCost();
+		this.counterTotalCost();
 	}
 
-	counterTotalCost(): void {
+	counterTotalCost(): number {
 		let totalCost = 0;
 		this.basketModel.basketItems.forEach((item) => {
 			totalCost += item.price;
 		});
 		this.basketPrice.textContent = `${totalCost} синапсов`;
+		return totalCost;
 	}
 
 	changeButtonActivity(): void {

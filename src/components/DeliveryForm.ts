@@ -1,5 +1,6 @@
 import { IActionInput, IActions, IDeliveryForm } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
+import { WebLarekApi } from './WebLarekApi';
 
 export class DeliveryForm implements IDeliveryForm {
 	deliveryFormContent: HTMLElement;
@@ -8,13 +9,15 @@ export class DeliveryForm implements IDeliveryForm {
 	buttonCash: HTMLButtonElement;
 	buttonNext: HTMLButtonElement;
 	error: HTMLElement;
+	webLarekApi: WebLarekApi;
 
 	constructor(
 		deliveryFormTemplate: HTMLTemplateElement,
 		actionButtonCard: IActions,
 		actionButtonCash: IActions,
 		actionToggleButton: IActionInput,
-		actionNext: IActions
+		actionNext: IActions,
+		webLarekApi: WebLarekApi
 	) {
 		this.deliveryFormContent = cloneTemplate(deliveryFormTemplate);
 		this.inputAddress = this.deliveryFormContent.querySelector(
@@ -35,6 +38,7 @@ export class DeliveryForm implements IDeliveryForm {
 		this.buttonNext.addEventListener('click', actionNext.onClick);
 		this.inputAddress.addEventListener('input', actionToggleButton.onInput);
 		this.error = ensureElement('.form__errors', this.deliveryFormContent);
+		this.webLarekApi = webLarekApi;
 	}
 
 	toggleButtonCardActivity(): void {
@@ -61,7 +65,21 @@ export class DeliveryForm implements IDeliveryForm {
 			this.error.textContent = '';
 		} else {
 			this.buttonNext.setAttribute('disabled', 'true');
-            this.error.textContent = 'Необходимо ввести корректные данные';
+			this.error.textContent = 'Необходимо ввести корректные данные';
+		}
+	}
+
+	clearDeliveryForm(): void {
+		this.inputAddress.value = '';
+	}
+
+	addToOrder(): void {
+		this.webLarekApi.order.address = this.inputAddress.value;
+
+		if (this.buttonCard.classList.contains('button_alt-active')) {
+			this.webLarekApi.order.payment = this.buttonCard.textContent;
+		} else {
+			this.webLarekApi.order.payment = this.buttonCash.textContent;
 		}
 	}
 }
