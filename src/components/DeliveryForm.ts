@@ -1,20 +1,22 @@
-import { IActions, IDeliveryForm } from '../types';
+import { IActionInput, IActions, IDeliveryForm } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 
-export class DeliveryForm {
+export class DeliveryForm implements IDeliveryForm {
 	deliveryFormContent: HTMLElement;
-	formAddress: HTMLInputElement;
+	inputAddress: HTMLInputElement;
 	buttonCard: HTMLButtonElement;
 	buttonCash: HTMLButtonElement;
 	buttonNext: HTMLButtonElement;
 
 	constructor(
 		deliveryFormTemplate: HTMLTemplateElement,
-		actions: IActions,
+		actionButtonCard: IActions,
+		actionButtonCash: IActions,
+		actionToggleButton: IActionInput,
 		actionNext: IActions
 	) {
 		this.deliveryFormContent = cloneTemplate(deliveryFormTemplate);
-		this.formAddress = this.deliveryFormContent.querySelector(
+		this.inputAddress = this.deliveryFormContent.querySelector(
 			'input[name="address"]'
 		) as HTMLInputElement;
 		this.buttonCard = this.deliveryFormContent.querySelector(
@@ -27,8 +29,21 @@ export class DeliveryForm {
 			'.order__button',
 			this.deliveryFormContent
 		);
-		this.buttonCard.addEventListener('click', actions.onClick);
-		this.buttonCash.addEventListener('click', actions.onClick);
+		this.buttonCard.addEventListener('click', actionButtonCard.onClick);
+		this.buttonCash.addEventListener('click', actionButtonCash.onClick);
 		this.buttonNext.addEventListener('click', actionNext.onClick);
+		this.inputAddress.addEventListener('input', actionToggleButton.onInput);
+	}
+
+	toggleButtonActivity(): void {
+		if (
+			(this.buttonCard.classList.contains('button_alt-active') ||
+				this.buttonCash.classList.contains('button_alt-active')) &&
+			this.inputAddress.value.length > 0
+		) {
+			this.buttonNext.removeAttribute('disabled');
+		} else {
+			this.buttonNext.setAttribute('disabled', 'true');
+		}
 	}
 }

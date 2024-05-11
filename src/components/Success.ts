@@ -1,10 +1,11 @@
 import { IActions, ISuccess } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 
-export class Success {
+export class Success implements ISuccess {
 	successContent: HTMLElement;
 	button: HTMLButtonElement;
 	orderSuccessDescription: HTMLParagraphElement;
+	orderDescription: HTMLParagraphElement;
 
 	constructor(successTemplate: HTMLTemplateElement, actions: IActions) {
 		this.successContent = cloneTemplate(successTemplate);
@@ -17,5 +18,9 @@ export class Success {
 			this.successContent
 		);
 		this.button.addEventListener('click', actions.onClick);
+	}
+
+	setOrderDescription(sum: HTMLElement): void {
+		this.orderSuccessDescription.textContent = `Списано ${sum.textContent}`;
 	}
 }

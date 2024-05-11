@@ -15,13 +15,4 @@ export class WebLarekApi extends Api implements IWebLarekApi {
 			data.items.map((item) => ({ ...item, image: this.cdn + item.image }))
 		);
 	}
-
-	getCardById(id: string): Promise<ProductItem> {
-		return this.get('/product').then((data: ApiListResponse<ProductItem>) => {
-			const foundItem = data.items.find((item) => item.id === id);
-			return (
-				foundItem ?? Promise.reject(new Error(`Item с id:${id} не найден`))
-			);
-		});
-	}
 }

@@ -1,23 +1,23 @@
 # Проектная работа "Веб-ларек"
 
-Стек: HTML, SCSS, TS, Webpack
+**Стек:** HTML, SCSS, TS, Webpack
 
-Паттерн программирования: упрощённая версия архитектурного паттерна MVP
+**Паттерн программирования:** упрощённая версия архитектурного паттерна MVP
 
-Структура проекта:
+**Структура проекта:**
 
-- src/ — исходные файлы проекта
-- src/components/ — папка с JS компонентами
-- src/components/base/ — папка с базовым кодом
+- `src/` — исходные файлы проекта
+- `src/components/` — папка с JS компонентами
+- `src/components/base/` — папка с базовым кодом
 
-Важные файлы:
+**Важные файлы:**
 
-- src/pages/index.html — HTML-файл главной страницы
-- src/types/index.ts — файл с типами
-- src/index.ts — точка входа приложения
-- src/scss/styles.scss — корневой файл стилей
-- src/utils/constants.ts — файл с константами
-- src/utils/utils.ts — файл с утилитами
+- `src/pages/index.html` — HTML-файл главной страницы
+- `src/types/index.ts` — файл с типами
+- `src/index.ts` — точка входа приложения
+- `src/styles/styles.scss` — корневой файл стилей
+- `src/utils/constants.ts` — файл с константами
+- `src/utils/utils.ts` — файл с утилитами
 
 ## Установка и запуск
 
@@ -51,6 +51,8 @@ yarn build
 
 ### Класс EventEmitter
 
+Класс EventEmitter реализует паттерн "Наблюдатель" и обеспечивает механизм подписки на события, отписки от событий и уведомления подписчиков о наступлении событий.
+
 Реализован на основе интерфейса:
 
 ```
@@ -72,40 +74,43 @@ type EmitterEvent = {
 };
 ```
 
-Класс EventEmitter реализует паттерн "Наблюдатель" и обеспечивает механизм подписки на события, отписки от событий и уведомления подписчиков о наступлении событий. 
-Он предоставляет следующие методы:
+**Предоставляет методы:**
 
-- on<T extends object>(eventName: EventName, callback: (event: T) => void): Подписывает указанную функцию callback на событие с именем eventName.
+- `on<T extends object>(eventName: EventName, callback: (event: T) => void)` - Подписывает указанную функцию callback на событие с именем eventName.
 
-- off(eventName: EventName, callback: Subscriber): Отписывает указанную функцию callback от события с именем eventName.
+- `off(eventName: EventName, callback: Subscriber)` - Отписывает указанную функцию callback от события с именем eventName.
 
-- emit<T extends object>(eventName: string, data?: T): Уведомляет всех подписчиков о наступлении события с именем eventName, передавая им данные eventData, если они предоставлены.
+- `emit<T extends object>(eventName: string, data?: T)` - Уведомляет всех подписчиков о наступлении события с именем eventName, передавая им данные eventData, если они предоставлены.
 
-- onAll(callback: (event: EmitterEvent) => void): Подписывает указанную функцию callback на все события.
+- `onAll(callback: (event: EmitterEvent) => void)` - Подписывает указанную функцию callback на все события.
 
-- offAll(): Отписывает все функции от всех событий.
+- `offAll()` - Отписывает все функции от всех событий.
 
-- trigger<T extends object>(eventName: string, context?: Partial<T>): Генерирует событие с именем eventName и передает ему данные eventData.
+- `trigger<T extends object>(eventName: string, context?: Partial<T>)` - Генерирует событие с именем eventName и передает ему данные eventData.
 
 ### Класс Component
 
-Класс Component предоставляет удобный инструментарий для работы с DOM-элементами. Он включает в себя следующие методы:
+Класс Component предоставляет удобный инструментарий для работы с DOM-элементами.
 
-- toggleClass(element: HTMLElement, className: string, force?: boolean): Переключает класс className у указанного DOM-элемента element.
+**Предоставляет методы:**
 
-- protected setText(element: HTMLElement, value: unknown): Устанавливает текстовое содержимое text для указанного DOM-элемента element.
+- `toggleClass(element: HTMLElement, className: string, force?: boolean)` - Переключает класс className у указанного DOM-элемента element.
 
-- setDisabled(element: HTMLElement, state: boolean): Устанавливает состояние блокировки (disabled) для указанного DOM-элемента element.
+- `protected setText(element: HTMLElement, value: unknown)` - Устанавливает текстовое содержимое text для указанного DOM-элемента element.
 
-- protected setHidden(element: HTMLElement): Скрывает указанный DOM-элемент element.
+- `setDisabled(element: HTMLElement, state: boolean)` - Устанавливает состояние блокировки (disabled) для указанного DOM-элемента element.
 
-- protected setVisible(element: HTMLElement): Показывает указанный DOM-элемент element.
+- `protected setHidden(element: HTMLElement)` - Скрывает указанный DOM-элемент element.
 
-- protected setImage(element: HTMLImageElement, src: string, alt?: string): Устанавливает изображение с источником src и альтернативным текстом alt для указанного элемента <img>.
+- `protected setVisible(element: HTMLElement)` - Показывает указанный DOM-элемент element.
 
-- render(data?: Partial<T>): HTMLElement: Рендерит элемент в указанный контейнер container и возвращает сам элемент.
+- `protected setImage(element: HTMLImageElement, src: string, alt?: string)` - Устанавливает изображение с источником src и альтернативным текстом alt для указанного элемента <img>.
+
+- `render(data?: Partial<T>)` - HTMLElement: Рендерит элемент в указанный контейнер container и возвращает сам элемент.
 
 ## Класс Api
+
+Класс Api отвечает за взаимодействие с сервером посредством отправки HTTP-запросов.
 
 Реализован на основе типов:
 
@@ -120,15 +125,17 @@ type ApiListResponse<Type> = {
 type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
 ```
 
-Класс Api отвечает за взаимодействие с сервером посредством отправки HTTP-запросов. Он предоставляет следующие методы:
+**Предоставляет методы:**
 
-- protected handleResponse(response: Response): Promise<object>: Отвечает за обработку ответа от сервера после выполнения HTTP-запроса. Он принимает объект Response, представляющий ответ сервера, и возвращает Promise, разрешающийся объектом, представляющим обработанные данные ответа.
+- `protected handleResponse(response: Response): Promise<object>` - Отвечает за обработку ответа от сервера после выполнения HTTP-запроса. Он принимает объект Response, представляющий ответ сервера, и возвращает Promise, разрешающийся объектом, представляющим обработанные данные ответа.
 
-- get(url: string): Promise<any>: Выполняет GET запрос по указанному url и возвращает Promise с результатом запроса.
+- `get(url: string): Promise<any>` - Выполняет GET запрос по указанному url и возвращает Promise с результатом запроса.
 
-- post(uri: string, data: object, method: ApiPostMethods = 'POST'): Выполняет POST запрос по указанному url с переданными данными data и возвращает Promise с результатом запроса.
+- `post(uri: string, data: object, method: ApiPostMethods = 'POST')` - Выполняет POST запрос по указанному url с переданными данными data и возвращает Promise с результатом запроса.
 
-## Работа с данными
+## Модели данных(Model)
+
+_Архитектурный слой необходимый для хранения и изменения данных._
 
 ### Класс WebLarekApi:
 
@@ -141,8 +148,6 @@ WebLarekApi предназначен для получения данных ка
 interface IWebLarekApi {
 	cdn: string;
 	getCardList(): Promise<ProductItem[]>
-	getCardById(id:string): Promise<ProductItem>
-	
 }
 ```
 
@@ -157,17 +162,15 @@ type ProductItem = {
 }
 ```
 
-Предоставляет поля и методы:
+**Предоставляет поля и методы:**
 
 Поля:
 
-- cdn: string - используется для формирования полного пути к изображениям при их отображении в приложении.
+- `cdn: string` - используется для формирования полного пути к изображениям при их отображении в приложении.
 
 Методы:
 
-- getCardList(): ProductItem[] - Получает массив данных карточек с сервера и возвращает его. Каждый элемент массива представляет объект с данными карточки товара.
-
-- getCardById(id: string): ProductItem - Получает данные карточки товара по указанному идентификатору id с сервера и возвращает их.
+- `getCardList(): ProductItem[]` - Получает массив данных карточек с сервера и возвращает его. Каждый элемент массива представляет объект с данными карточки товара.
 
 ### Класс BasketModel:
 
@@ -184,15 +187,19 @@ interface IBasketModel {
     }
 ```
 
-Методы и поля:
+**Предоставляет поля и методы:**
 
-- basket: ProductItem[] - Поле для хранения элементов корзины. Это массив объектов productItem, каждый из которых представляет товар в корзине.
+Поля:
 
-- addToBasket(item: ProductItem) - Добавляет указанный товар item в корзину.
+- `basket: ProductItem[]` - Поле для хранения элементов корзины. Это массив объектов ProductItem, каждый из которых представляет товар в корзине.
 
-- removeFromBasket(id: string) - Удаляет указанный товар item из корзины.
+Методы:
 
-- clearBasket() - Очищает корзину от всех товаров.
+- `addToBasket(item: ProductItem): void` - Добавляет указанный товар item в корзину.
+
+- `removeFromBasket(id: string): void` - Удаляет указанный товар item из корзины.
+
+- `clearBasket(): void` - Очищает корзину от всех товаров.
 
 #### Класс CatalogModel:
 
@@ -207,15 +214,21 @@ interface ICatalogModel {
 }
 ```
 
-Методы и поля:
+**Предоставляет поля и методы:**
 
-- catalog: ProductItem[] - Поле для хранения элементов каталога. Это массив объектов ProductItem, представляющих товары в каталоге.
+Поля:
 
-- addToCatalog(items: ProductItem[]): void - Добавляет указанные товары items в каталог.
+- `catalog: ProductItem[]` - Поле для хранения элементов каталога. Это массив объектов ProductItem, представляющих товары в каталоге.
 
-## Работа с отображением
+Методы:
 
-### Класс Card
+- `addToCatalog(items: ProductItem[]): void` - Добавляет указанные товары items в каталог.
+
+## Компоненты отображения(View)
+
+_Архитектурный слой необходимый для отображения данных на странице._
+
+### Класс Card:
 
 Card представляет собой класс для создания карточек товаров на основе предоставленного шаблона (template) и предоставляет методы для установки значений в карточку.
 
@@ -238,27 +251,28 @@ interface ICard {
 }
 ```
 
+```
 interface IActions {
-	onClick(evt:MouseEvent): void;
+	onClick(evt:MouseEvent): void
 }
 ```
 
-И предоставляет поля и методы:
+**Предоставляет поля и методы:**
 
 Поля:
 
-- container: HTMLElement: Шаблон карточки.
-- title: HTMLHeadingElement: Заголовок карточки.
-- description?: HTMLParagraphElement: Описание карточки (необязательное).
-- image?: HTMLImageElement: URL изображения для карточки (необязательное).
-- category: HTMLSpanElement: Категория карточки.
-- price: HTMLSpanElement: Цена карточки.
-- button?: HTMLButtonElement: Кнопка у карточки (необязательное).
-- actions: IActions: Колбэк при клике.
+- `container: HTMLElement` - Шаблон карточки.
+- `title: HTMLHeadingElement` - Заголовок карточки.
+- `description?: HTMLParagraphElement` - Описание карточки (необязательное).
+- `image?: HTMLImageElement` - URL изображения для карточки (необязательное).
+- `category: HTMLSpanElement` - Категория карточки.
+- `price: HTMLSpanElement` - Цена карточки.
+- `button?: HTMLButtonElement` - Кнопка у карточки (необязательное).
+- `actions: IActions` - Колбэк при клике.
 
 Методы:
 
-- render(data: ProductItem): HTMLElement: вовзращает готовую карточку.
+- `render(data: ProductItem): HTMLElement` - вовзращает готовую карточку.
 
 ### Класс Modal:
 
@@ -282,62 +296,62 @@ interface IActions {
 }
 ```
 
-И предоставляет следующие методы и поля:
+**Предоставляет поля и методы:**
 
 Поля:
 
-- container: HTMLDivElement - контейнер с модальным окном.
-- closeButton: HTMLElement - кнопка для закрытия модального окна.
-- actions: IActions - Колбэк при клике.
+- `container: HTMLDivElement` - контейнер с модальным окном.
+- `closeButton: HTMLElement` - кнопка для закрытия модального окна.
+- `actions: IActions` - Колбэк при клике.
 
 Методы:
 
-- show(): void - служит для открытия модального окна.
+- `show(): void` - служит для открытия модального окна.
 
-- close(): void - служит для закрытия модального окна.
+- `close(): void` - служит для закрытия модального окна.
 
 ### Класс ContentModal
 
 ContentModal отображает модальное окно, заполненное предоставленным шаблоном.
 
-Наследуется от класса Component и Modal:
-ContentModal наследует функциональность от класса Component, что позволяет ему использовать методы для работы с DOM-элементами, а также от класса Modal, что позволяет использовать методы открытия и закрытия.
-Наследует функциональность от класса EventEmitter, что позволяет ему использовать методы для работы с событиями.
+Наследуется от класса Modal:
+ContentModal наследует функциональность от класса Modal, что позволяет использовать методы открытия и закрытия.
 
 Реализуется на основе интерфейса:
 
 ```
 interface IContentModal {
-	content: HTMLElement
-	modalContent: HTMLElement
+	content: HTMLElement;
+	modalContent: HTMLElement;
 	button: HTMLButtonElement;
+	show: void;
 	setContent(content: HTMLElement): void
 	setButton(button: HTMLButtonElement, actions: IActions): void
 	clearModalContent(): void
 }
 ```
 
- Предоставляет поля и методы:
+ **Предоставляет поля и методы:**
 
  Поля:
 
-- container: HTMLDivElement - контент для вставки в модальное окно.
-- modalContent: HTMLElement - модальное окно.
-- button: HTMLButtonElement - кнопка.
+- `container: HTMLDivElement` - контент для вставки в модальное окно.
+- `modalContent: HTMLElement` - модальное окно.
+- `button: HTMLButtonElement` - кнопка.
 
-Методы: 
+Методы:
 
-- setContent(content: HTMLElement): void - устанавливает контент для вставки в модальное окно.
-- clearModalContent(): void - очищает контент в модальном окне.
-- setButton(button: HTMLButtonElement, actions: IActions): void - установка кнопки в поле button.
+- `show(): void` - расширяет метод show() родителя.
+- `setContent(content: HTMLElement): void` - устанавливает контент для вставки в модальное окно.
+- `clearModalContent(): void` - очищает контент в модальном окне.
+- `setButton(button: HTMLButtonElement, actions: IActions): void` - установка кнопки в поле button.
 
 ### Класс Basket
 
 Basket представляет собой класс, который принимает шаблон (template) модального окна корзиной и предоставляет методы для работы с ней.
 
-Наследуется от класса Component и EventEmitter:
+Наследуется от класса Component:
 ContentModal наследует функциональность от класса Component, что позволяет ему использовать методы для работы с DOM-элементами.
-Наследует функциональность от класса EventEmitter, что позволяет ему использовать методы для работы с событиями.
 
 Реализуется на основе интерфейса:
 
@@ -349,148 +363,125 @@ interface IBasket {
 	cardsBasket: HTMLElement[];
 	basketList: HTMLElement;
 	basketModel: BasketModel;
+	basketButton: HTMLElement;
+	eventEmitter: EventEmitter;
 	counterTotalCost(basketCard:HTMLElement): void;
 	updateBasket(): void;
-	setCards(items: HTMLElement[]): void;
+	setCards(): void;
+	changeButtonActivity(): void;
 }
 ```
 
-Предоставляет методы и поля:
+**Предоставляет поля и методы:**
 
 Поля:
 
-- basket: HTMLElement - корзина.
-- basketPrice: HTMLElement - общая стоимость корзины.
-- cardBasketTemplate: HTMLTemplateElement - шаблон корзины.
-- cardsBasket: HTMLElement[] - массив готовых карточек корзины.
-- basketList: HTMLElement - список для карточек.
-- basketModel: BasketModel - экземпляр класса BasketModel.
+- `basket: HTMLElement` - корзина.
+- `basketPrice: HTMLElement` - общая стоимость корзины.
+- `cardBasketTemplate: HTMLTemplateElement` - шаблон корзины.
+- `cardsBasket: HTMLElement[]` - массив готовых карточек корзины.
+- `basketList: HTMLElement` - список для карточек.
+- `basketModel: BasketModel` - экземпляр класса BasketModel.
+- `basketButton: HTMLElement` - кнопка "Оформить".
+- `eventEmitter: EventEmitter` - экземпляр класса EventEmitter.
 
 Методы:
 
-- counterTotalCost(cardPrice: number): void - метод для расчета общей стоимости корзины.
-- setCards(items: HTMLElement[]): void - устанавливает карточки в корзину.
-- updateBasket(): void - обновляет содержимое корзины.
-
-### Класс Form
-
-Form представляет собой абстрактный класс, который предоставляет методы для работы с модальными окнами содержащими формы.
-
-Наследуется от класса Component и EventEmitter:
-ContentModal наследует функциональность от класса Component, что позволяет ему использовать методы для работы с DOM-элементами.
-Наследует функциональность от класса EventEmitter, что позволяет ему использовать методы для работы с событиями.
-
-Реализуется на основе интерфейса:
-
-```
-interface IForm {
-	validate(): void
-	sumbit(): void
-}
-```
-
-Предоставляет методы:
-
-- validate(): void - служит для валидации полей формы.
-- submit(): void - служит для подтверждения данных по нажатию на кнопку, скрытия текущего попапа и открытия нового.
+- `counterTotalCost(cardPrice: number): void` - метод для расчета общей стоимости корзины.
+- `setCards(): void` - устанавливает карточки в корзину.
+- `updateBasket(): void` - обновляет содержимое корзины.
+- `changeButtonActivity(): void` - меняет активность кнопки на основании содержимого.
 
 ### Класс ContactForm
 
 ContactForm представляет собой класс, который принимает шаблон модального окна в качестве аргумента конструктора. Этот шаблон содержит формы для ввода контактной информации, такой как телефон и адрес электронной почты.
 
-Наследуется от класса Form:
-ContactForm наследует функциональность от класса Form, что позволяет ему использовать методы для работы с формами.
-
 Реализуется на основе интерфейса:
 
 ```
 interface IContactForm {
-	template: HTMLElement
-	setPhone(value: string): void
-	setEmail(value: string): void
+	contactFormContent: HTMLElement;
+	inputEmail: HTMLInputElement;
+	inputPhone: HTMLInputElement;
+	buttonPay: HTMLButtonElement;
+	toggleButtonActivity(): void
 }
 ```
 
-Предоставляет методы и поля:
+**Предоставляет поля и методы:**
 
 Поля:
 
-- template : HTMLElement - шаблон модального окна с формами для ввода информации для контактирования.
+- `contactFormContent: HTMLElement` - контент из шаблона contactFormTemplate;
+- `inputEmail: HTMLInputElement` - поле ввода почты.
+- `inputPhone: HTMLInputElement` - поле ввода номера телефона.
+- `buttonPay: HTMLButtonElement` - кнопка "Оплатить".
 
 Методы:
 
-- setPhone(value: string): void - устаналивает значение в поле "телефон"
-- setEmail(value: string): void - устаналивает значение в поле "почта"
+- `toggleButtonActivity(): void` - переключает активность кнопки "Оплатить" в зависимости от условий.
 
 ### Класс DeliveryForm
 
 DeliveryForm представляет собой класс, который принимает шаблон (template) модального окна с формой для указания адреса доставки, кнопки для выбора формы оплаты (карта или наличные) и предоставляет методы для работы с ними.
 
-Наследуется от класса Form:
-DeliveryForm наследует функциональность от класса Form, что позволяет ему использовать методы для работы с формами.
-
 Реализуется на основе интерфейса:
 
 ```
 interface IDeliveryForm {
-	template: HTMLElement
-	buttonCard: HTMLButtonElement
-	buttonCash: HTMLButtonElement
-	toggleButton(): void
-	setAddress(value: string): void
+	deliveryFormContent: HTMLElement;
+	inputAddress: HTMLInputElement;
+	buttonCard: HTMLButtonElement;
+	buttonCash: HTMLButtonElement;
+	buttonNext: HTMLButtonElement;
+	toggleButtonActivity(): void
 }
 ```
 
-Предоставляет методы и поля:
+**Предоставляет поля и методы:**
 
 Поля:
 
-- template : HTMLElement - шаблон модального окна с формой для ввода адреса и кнопками для указания способа оплаты.
-- buttonCard: HTMLButtonElement - кнопка "оплата картой"
-- buttonCash: HTMLButtonElement - кнопка "оплата наличными"
+- `deliveryFormContent: HTMLElement` - контент из шаблона deliveryFormTemplate.
+- `inputAddress: HTMLInputElement` - поле ввода, содержащее адрес.
+- `buttonCard: HTMLButtonElement` - кнопка "Оплата картой"
+- `buttonCash: HTMLButtonElement` - кнопка "Оплата за наличные"
+- `buttonNext: HTMLButtonElement` - кнопка "Далее"
 
 Методы:
 
-- toggleButton(): void - переключает доступность кнопок оплаты в зависимости от выбора.
-- setAddress(value: string): void - устаналивает значение в поле "адрес"
+- `toggleButtonActivity(): void` - переключает активность кнопки "Далее" в зависимости от условий.
 
 ### Класс Success
 
 Success представляет собой класс, который принимает шаблон (template) модального окна с отображающего информацию об успешном завершении покупки.
 
-Наследуется от класса Component:
-ContentModal наследует функциональность от класса Component, что позволяет ему использовать методы для работы с DOM-элементами.
-
 Реализуется на основе интерфейса:
 
 ```
 interface ISuccess {
-	template: HTMLElement
-	totalCost: string
-	buttonNext: HTMLButtonElement
-	close(): void
-	counterTotalCost(): string
+	successContent: HTMLElement;
+	button: HTMLButtonElement;
+	orderSuccessDescription: HTMLParagraphElement;
+	setOrderDescription(sum:HTMLElement): void;
 }
 ```
 
-Предоставляет методы и поля:
+**Предоставляет поля и методы:**
 
 Поля:
 
-- template: HTMLElement - шаблон модального окна с успешным результатом покупки.
-- totalCost: string - общая стоимость покупки
-- buttonNext: HTMLButtonElement - кнопка "За новыми покупками"
+- `successContent: HTMLElement` - контент из шаблона SuccessTemplate;
+- `button: HTMLButtonElement` - кнопка "За новыми покупками!"
+- `orderSuccessDescription: HTMLParagraphElement` - общая стоимость корзины.
 
 Методы:
 
-- close(): void - закрывает модальное окно по нажатию на кнопку.
-- counterTotalCost(): string - высчитывает общую стоимость покупки. Возвращает строку, представляющую общую стоимость покупки.
+- `setOrderDescription(sum:HTMLElement): void` - устанавливает суммарную стоимость товаров.
 
 ### Класс Page 
 
 Page представляет собой класс для отображения страницы с карточками и счётчика корзины.
-
-Наследует функциональность от класса EventEmitter, что позволяет ему использовать методы для работы с событиями.
 
 Реализуется на основе интерфейса IPage:
 
@@ -507,18 +498,40 @@ interface IPage {
 }
 ```
 
-Предоставляет методы и поля:
+**Предоставляет поля и методы:**
 
 Поля:
 
-- counter: HTMLElement - элемент HTML для отображения счётчика корзины.
-- catalog: HTMLElement[] - массив со всеми карточками.
-- pageWrapper: HTMLElement - оболочка контента страницы.
-- basketButton: HTMLButtonElement - кнопка открытия корзины.
+- `counter: HTMLElement` - элемент HTML для отображения счётчика корзины.
+- `catalog: HTMLElement` - массив со всеми карточками.
+- `pageWrapper: HTMLElement` - оболочка контента страницы.
+- `basketButton: HTMLButtonElement` - кнопка открытия корзины.
 
 Методы:
 
-- updateCounter(value: number): void - представляет метод для обновления счётчика корзины.
-- setCatalog(items: HTMLElement[]): void - устанавливает содержимое поля catalog.
-- lockPage(): void - блокировка прокрутки страницы.
-- unlockPage(): void - разблокировка прокрутки страницы.
+- `updateCounter(value: number): void` - представляет метод для обновления счётчика корзины.
+- `setCatalog(items: HTMLElement[]): void` - устанавливает содержимое поля catalog.
+- `lockPage(): void` - блокировка прокрутки страницы.
+- `unlockPage(): void` - разблокировка прокрутки страницы.
+
+## Компоненты представления(Presenter)
+
+*Архитектурный слой необходимый для связывания слоя Model и слоя View.*
+
+Презентером выступает основной файл index.ts, который регулирует взаимодействие между отображением и данными путем подписки на события через брокер событий (экземпляр класса EventEmitter).
+
+### Список событий:
+
+- `'Card:open'` - Открытие карточки товара.
+- `'Modal:close'` - Закрытие модального окна.
+- `'Basket:addItem'` - Добавление товара в корзину.
+- `'Basket:open'` - Открытие корзины.
+- `'Card:delete'` - Удаление товара из корзины.
+- `'DeliveryForm:open'` - Открытие формы доставки.
+- `'Button-card:active'` - Активация кнопки оплаты картой.
+- `'Button-cash:active'` - Активация кнопки оплаты наличными.
+- `'Input:change'` - Изменение поля ввода доставки.
+- `'ContactForm:open'` - Открытие формы контактов.
+- `'Input:triggered'` - Изменение поля ввода почты или телефона.
+- `'Success:open'` - Открытие сообщения об успешной покупке.
+- `'Success:close'` - Закрытие сообщения об успешной покупке.

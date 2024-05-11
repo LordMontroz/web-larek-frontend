@@ -13,9 +13,12 @@ export interface IActions {
 	onClick(evt: MouseEvent): void;
 }
 
+export interface IActionInput {
+	onInput(evt: Event): void;
+}
+
 export interface IWebLarekApi {
 	getCardList(): Promise<ProductItem[]>;
-	getCardById(id: string): Promise<ProductItem>;
 }
 
 export interface IBasketModel {
@@ -65,9 +68,10 @@ export interface IBasket {
 	cardsBasket: HTMLElement[];
 	basketList: HTMLElement;
 	basketModel: BasketModel;
-	counterTotalCost(cardPrice: number): void;
-	updateBasket(): void;
-	setCards(items: HTMLElement[]): void;
+	counterTotalCost(cardPrice: number): void
+	updateBasket(): void
+	setCards(items: HTMLElement[]): void
+	changeButtonActivity(): void
 }
 
 export interface IForm {
@@ -76,25 +80,27 @@ export interface IForm {
 }
 
 export interface IContactForm {
-	template: HTMLElement;
-	setPhone(value: string): void;
-	setEmail(value: string): void;
+	contactFormContent: HTMLElement;
+	inputEmail: HTMLInputElement;
+	inputPhone: HTMLInputElement;
+	buttonPay: HTMLButtonElement;
+	toggleButtonActivity(): void
 }
 
 export interface IDeliveryForm {
-	template: HTMLElement;
+	deliveryFormContent: HTMLElement;
+	inputAddress: HTMLInputElement;
 	buttonCard: HTMLButtonElement;
 	buttonCash: HTMLButtonElement;
-	toggleButton(): void;
-	setAddress(value: string): void;
+	buttonNext: HTMLButtonElement;
+	toggleButtonActivity(): void;
 }
 
 export interface ISuccess {
-	template: HTMLElement;
-	totalCost: string;
-	buttonNext: HTMLButtonElement;
-	close(): void;
-	counterTotalCost(): string;
+	successContent: HTMLElement;
+	button: HTMLButtonElement;
+	orderSuccessDescription: HTMLParagraphElement;
+	setOrderDescription(sum:HTMLElement): void
 }
 
 export interface IPage {
