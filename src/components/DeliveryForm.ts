@@ -1,4 +1,4 @@
-import { IActionInput, IActions, IDeliveryForm } from '../types';
+import { IDeliveryFormHandlers, IDeliveryForm } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 import { WebLarekApi } from './WebLarekApi';
 
@@ -9,15 +9,10 @@ export class DeliveryForm implements IDeliveryForm {
 	buttonCash: HTMLButtonElement;
 	buttonNext: HTMLButtonElement;
 	error: HTMLElement;
-	webLarekApi: WebLarekApi;
 
 	constructor(
 		deliveryFormTemplate: HTMLTemplateElement,
-		actionButtonCard: IActions,
-		actionButtonCash: IActions,
-		actionToggleButton: IActionInput,
-		actionNext: IActions,
-		webLarekApi: WebLarekApi
+		handlers: IDeliveryFormHandlers
 	) {
 		this.deliveryFormContent = cloneTemplate(deliveryFormTemplate);
 		this.inputAddress = this.deliveryFormContent.querySelector(
@@ -33,12 +28,11 @@ export class DeliveryForm implements IDeliveryForm {
 			'.order__button',
 			this.deliveryFormContent
 		);
-		this.buttonCard.addEventListener('click', actionButtonCard.onClick);
-		this.buttonCash.addEventListener('click', actionButtonCash.onClick);
-		this.buttonNext.addEventListener('click', actionNext.onClick);
-		this.inputAddress.addEventListener('input', actionToggleButton.onInput);
+		this.buttonCard.addEventListener('click', handlers.handleButtonCard);
+		this.buttonCash.addEventListener('click', handlers.handleButtonCash);
+		this.buttonNext.addEventListener('click', handlers.handleNext);
+		this.inputAddress.addEventListener('input', handlers.handleToggleButton);
 		this.error = ensureElement('.form__errors', this.deliveryFormContent);
-		this.webLarekApi = webLarekApi;
 	}
 
 	toggleButtonCardActivity(): void {
@@ -71,15 +65,18 @@ export class DeliveryForm implements IDeliveryForm {
 
 	clearDeliveryForm(): void {
 		this.inputAddress.value = '';
+		this.toggleButtonActivity();
 	}
 
-	addToOrder(): void {
-		this.webLarekApi.order.address = this.inputAddress.value;
+	getInputAddressValue(): string {
+		return this.inputAddress.value;
+	}
 
+	getButtonTextContent(): string {
 		if (this.buttonCard.classList.contains('button_alt-active')) {
-			this.webLarekApi.order.payment = this.buttonCard.textContent;
+			return this.buttonCard.textContent;
 		} else {
-			this.webLarekApi.order.payment = this.buttonCash.textContent;
+			return this.buttonCash.textContent;
 		}
 	}
 }

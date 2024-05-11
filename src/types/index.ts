@@ -1,10 +1,4 @@
-import { Basket } from '../components/Basket';
 import { BasketModel } from '../components/BasketModel';
-import { ContactForm } from '../components/ContactForm';
-import { ContentModal } from '../components/ContentModal';
-import { DeliveryForm } from '../components/DeliveryForm';
-import { Page } from '../components/Page';
-import { Success } from '../components/Success';
 
 export type ProductItem = {
 	id: string;
@@ -20,6 +14,21 @@ export type ApiListResponse<Type> = {
 	items: Type[];
 };
 
+export interface IContactOrder {
+	email: string;
+	phone: string;
+}
+
+export interface IDeliveryOrder {
+	payment: string;
+	address: string;
+}
+
+export interface IOrder extends IContactOrder, IDeliveryOrder {
+	total: number;
+	items: string[];
+}
+
 export type OrderDetails = {
 	payment: string;
 	email: string;
@@ -27,34 +36,60 @@ export type OrderDetails = {
 	address: string;
 };
 
-export interface IActions {
-	onClick(evt: MouseEvent): void;
+export interface IDeliveryFormHandlers {
+	handleButtonCard: () => void;
+	handleButtonCash: () => void;
+	handleToggleButton: () => void;
+	handleNext: () => void;
 }
 
-export interface IActionInput {
-	onInput(evt: Event): void;
+export interface IContactFormHandlers {
+	handleSuccessOpen: () => void;
+	handleToggleButtonActivity: () => void;
+}
+
+export interface IPageHandler {
+	handleBasketOpen: () => void;
+}
+
+export interface IModalHandler {
+	handleModalClose: () => void;
+}
+
+export interface IContentModalHandler {
+	handleAddItemToBasket: () => void;
+}
+
+export interface IBasketHandler {
+	handleOpenDeliveryForm: () => void;
+}
+
+export interface ISuccessHandler {
+	handleSuccessClose: () => void;
+}
+
+export interface ICatalogCardHandler {
+	handleCardOpen: () => void;
+}
+
+export interface IBasketCardHandler {
+	handleCardDelete: () => void;
 }
 
 export interface IWebLarekApi {
 	cdn: string;
-	order: ApiListResponse<string> & OrderDetails;
-	contactForm: ContactForm;
-	deliveryForm: DeliveryForm;
-	basket: Basket;
-	basketModel: BasketModel;
-	success: Success;
 	getCardList(): Promise<ProductItem[]>;
-	orderPurchase(): void;
+	orderPurchase(order: ApiListResponse<string> & OrderDetails): void;
 }
 
 export interface IBasketModel {
+	order: ApiListResponse<string> & OrderDetails;
 	basketItems: ProductItem[];
-	basket: Basket;
-	page: Page;
-	contentModal: ContentModal;
 	addToBasket(item: ProductItem): void;
 	removeFromBasket(item: ProductItem): void;
+	getBasketItemsLength(): string;
 	clearBasket(): void;
+	getCardIndex(item: ProductItem): string;
 }
 
 export interface ICatalogModel {
@@ -63,7 +98,7 @@ export interface ICatalogModel {
 }
 
 export interface ICard {
-	actions: IActions;
+	handleCardOpen: ICatalogCardHandler;
 	container: HTMLElement;
 	title: HTMLHeadingElement;
 	description?: HTMLParagraphElement;
@@ -86,10 +121,9 @@ export interface IContentModal {
 	content: HTMLElement;
 	modalContent: HTMLElement;
 	button: HTMLButtonElement;
-	page: Page;
 	show(content: HTMLElement): void;
 	close(): void;
-	setButton(button: HTMLButtonElement, actions: IActions): void;
+	setButton(button: HTMLButtonElement, handler: IContentModalHandler): void;
 }
 
 export interface IBasket {
@@ -102,7 +136,6 @@ export interface IBasket {
 	counterTotalCost(): number;
 	updateBasket(): void;
 	setCards(items: HTMLElement[]): void;
-	changeButtonActivity(): void;
 }
 
 export interface IForm {
@@ -116,8 +149,9 @@ export interface IContactForm {
 	inputPhone: HTMLInputElement;
 	buttonPay: HTMLButtonElement;
 	error: HTMLElement;
+	getInputEmailValue(): string;
+	getInputPhoneValue(): string;
 	toggleButtonActivity(): void;
-	addToOrder(): void;
 	addPhoneMask(): void;
 }
 
@@ -131,7 +165,9 @@ export interface IDeliveryForm {
 	toggleButtonActivity(): void;
 	toggleButtonCardActivity(): void;
 	toggleButtonCashActivity(): void;
-	addToOrder(): void;
+	clearDeliveryForm(): void;
+	getInputAddressValue(): string;
+	getButtonTextContent(): string;
 }
 
 export interface ISuccess {
@@ -146,7 +182,7 @@ export interface IPage {
 	catalog: HTMLElement;
 	pageWrapper: HTMLElement;
 	basketButton: HTMLButtonElement;
-	updateCounter(): void;
+	updateCounter(basketLength: string): void;
 	setCatalog(items: HTMLElement[]): void;
 	lockPage(): void;
 	unlockPage(): void;

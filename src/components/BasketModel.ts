@@ -1,56 +1,58 @@
-import { IBasketModel } from '../types/index';
+import { ApiListResponse, IBasketModel, OrderDetails } from '../types/index';
 import { ProductItem } from '../types/index';
-import { Basket } from './Basket';
-import { ContactForm } from './ContactForm';
-import { ContentModal } from './ContentModal';
-import { DeliveryForm } from './DeliveryForm';
-import { Page } from './Page';
 
 export class BasketModel implements IBasketModel {
 	basketItems: ProductItem[] = [];
-	basket: Basket;
-	page: Page;
-	contentModal: ContentModal;
 
-	constructor(
-		page: Page,
-		contentModal: ContentModal,
-		deliveryForm: DeliveryForm,
-		contactForm: ContactForm
-	) {
-		this.page = page;
-		this.contentModal = contentModal;
-		this.deliveryForm = deliveryForm;
-		this.contactForm = contactForm;
-	}
-
+	order: ApiListResponse<string> & OrderDetails = {
+		payment: '',
+		email: '',
+		phone: '',
+		address: '',
+		total: 0,
+		items: [],
+	};
 	addToBasket(item: ProductItem): void {
 		if (!this.basketItems.find((BasketItem) => BasketItem.id === item.id)) {
 			this.basketItems.push(item);
 		}
-		this.basket.updateBasket();
-		this.page.updateCounter();
-		this.contentModal.close();
+		this.addCardIdToOrder(item);
 	}
 
 	removeFromBasket(item: ProductItem): void {
 		this.basketItems = this.basketItems.filter((card) => card.id !== item.id);
-		this.basket.updateBasket();
-		this.basket.changeButtonActivity();
-		this.page.updateCounter();
+		this.removeCardIdFromOrder(item);
 	}
 
-	getTotalCost(): number {
-		return this.basketItems.reduce((total, amount) => {
-			return total + amount.price;
-		}, 0);
+	getBasketItemsLength(): string {
+		return this.basketItems.length.toString();
+	}
+
+	getCardIndex(item: ProductItem): string {
+		return (this.basketItems.indexOf(item) + 1).toString();
+	}
+
+	private addCardIdToOrder(item: ProductItem): void {
+		this.order.items.push(item.id);
+	}
+
+	private removeCardIdFromOrder(item: ProductItem): void {
+		this.order.items = this.order.items.filter((id) => id !== item.id);
 	}
 
 	clearBasket(): void {
 		this.basketItems = [];
-		this.basket.updateBasket();
-		this.page.updateCounter();
-		this.contactForm.clearContactForms();
-		this.deliveryForm.clearDeliveryForm();
+		this.clearOrder();
+	}
+
+	private clearOrder(): void {
+		this.order = {
+			payment: '',
+			email: '',
+			phone: '',
+			address: '',
+			total: 0,
+			items: [],
+		};
 	}
 }

@@ -1,8 +1,6 @@
-import { IActions, IBasket, ProductItem } from '../types';
+import { IBasket, IBasketHandler, ProductItem } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 import { BasketModel } from './BasketModel';
-import { Card } from './Card';
-import { WebLarekApi } from './WebLarekApi';
 import { Component } from './base/components';
 import { EventEmitter } from './base/events';
 
@@ -15,13 +13,11 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 	basketModel: BasketModel;
 	basketButton: HTMLElement;
 	eventEmitter: EventEmitter;
-	webLarekApi: WebLarekApi;
 
 	constructor(
 		basketTemplate: HTMLTemplateElement,
 		basketModel: BasketModel,
-		webLarekApi: WebLarekApi,
-		actions: IActions,
+		handler: IBasketHandler,
 		eventEmitter: EventEmitter
 	) {
 		super(cloneTemplate(basketTemplate));
@@ -29,13 +25,15 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 			ensureElement<HTMLTemplateElement>('#card-basket');
 		this.eventEmitter = eventEmitter;
 		this.basketModel = basketModel;
-		this.webLarekApi = webLarekApi;
 		this.basket = cloneTemplate(basketTemplate);
 		this.basketPrice = ensureElement('.basket__price', this.basket);
 		this.basketList = ensureElement('.basket__list', this.basket);
 		this.basketButton = ensureElement('.basket__button', this.basket);
 		if (this.basket) {
-			this.basketButton.addEventListener('click', actions.onClick);
+			this.basketButton.addEventListener(
+				'click',
+				handler.handleOpenDeliveryForm
+			);
 		}
 	}
 
@@ -49,16 +47,9 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 	}
 
 	updateBasket(): void {
-		this.cardsBasket = [];
-		this.cardsBasket = this.basketModel.basketItems.map((item: ProductItem) => {
-			const basketCard = new Card(this.cardBasketTemplate, undefined, {
-				onClick: () => this.eventEmitter.emit('Card:delete', item),
-			});
-			basketCard.basketModel = this.basketModel;
-			return basketCard.render(item);
-		});
 		this.setCards();
 		this.counterTotalCost();
+		this.changeButtonActivity();
 	}
 
 	counterTotalCost(): number {
@@ -66,11 +57,11 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 		this.basketModel.basketItems.forEach((item) => {
 			totalCost += item.price;
 		});
-		this.basketPrice.textContent = `${totalCost} синапсов`;
+		this.setText(this.basketPrice, `${totalCost} синапсов`);
 		return totalCost;
 	}
 
-	changeButtonActivity(): void {
+	private changeButtonActivity(): void {
 		if (this.cardsBasket.length === 0) {
 			this.basketButton.setAttribute('disabled', 'true');
 		} else {

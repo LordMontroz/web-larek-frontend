@@ -1,6 +1,5 @@
-import { IActionInput, IActions, IContactForm } from '../types';
+import { IContactForm, IContactFormHandlers } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
-import { WebLarekApi } from './WebLarekApi';
 
 export class ContactForm implements IContactForm {
 	contactFormContent: HTMLElement;
@@ -8,15 +7,11 @@ export class ContactForm implements IContactForm {
 	inputPhone: HTMLInputElement;
 	buttonPay: HTMLButtonElement;
 	error: HTMLElement;
-	webLarekApi: WebLarekApi;
 
 	constructor(
 		contactFormTemplate: HTMLTemplateElement,
-		actionPay: IActions,
-		trackInput: IActionInput,
-		webLarekApi: WebLarekApi
+		handlers: IContactFormHandlers
 	) {
-		this.webLarekApi = webLarekApi;
 		this.contactFormContent = cloneTemplate(contactFormTemplate);
 		this.inputEmail = this.contactFormContent.querySelector(
 			'input[name="email"]'
@@ -28,9 +23,15 @@ export class ContactForm implements IContactForm {
 			'.button',
 			this.contactFormContent
 		);
-		this.buttonPay.addEventListener('click', actionPay.onClick);
-		this.inputEmail.addEventListener('input', trackInput.onInput);
-		this.inputPhone.addEventListener('input', trackInput.onInput);
+		this.buttonPay.addEventListener('click', handlers.handleSuccessOpen);
+		this.inputEmail.addEventListener(
+			'input',
+			handlers.handleToggleButtonActivity
+		);
+		this.inputPhone.addEventListener(
+			'input',
+			handlers.handleToggleButtonActivity
+		);
 		this.error = ensureElement('.form__errors', this.contactFormContent);
 	}
 
@@ -69,13 +70,17 @@ export class ContactForm implements IContactForm {
 		}
 	}
 
-	learContactForms(): void {
+	ClearContactForms(): void {
 		this.inputEmail.value = '';
 		this.inputPhone.value = '';
+		this.toggleButtonActivity();
 	}
 
-	addToOrder(): void {
-		this.webLarekApi.order.email = this.inputEmail.value;
-		this.webLarekApi.order.phone = this.inputPhone.value;
+	getInputEmailValue(): string {
+		return this.inputEmail.value;
+	}
+
+	getInputPhoneValue(): string {
+		return this.inputPhone.value;
 	}
 }

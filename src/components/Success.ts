@@ -1,4 +1,4 @@
-import { IActions, ISuccess } from '../types';
+import { ISuccess, ISuccessHandler } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 
 export class Success implements ISuccess {
@@ -7,7 +7,7 @@ export class Success implements ISuccess {
 	orderSuccessDescription: HTMLParagraphElement;
 	orderDescription: HTMLParagraphElement;
 
-	constructor(successTemplate: HTMLTemplateElement, actions: IActions) {
+	constructor(successTemplate: HTMLTemplateElement, handler: ISuccessHandler) {
 		this.successContent = cloneTemplate(successTemplate);
 		this.button = ensureElement<HTMLButtonElement>(
 			'.order-success__close',
@@ -17,7 +17,7 @@ export class Success implements ISuccess {
 			'.order-success__description',
 			this.successContent
 		);
-		this.button.addEventListener('click', actions.onClick);
+		this.button.addEventListener('click', handler.handleSuccessClose);
 	}
 
 	setOrderDescription(sum: HTMLElement): void {

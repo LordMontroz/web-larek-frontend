@@ -146,19 +146,62 @@ _Архитектурный слой необходимый для хранен�
 Наследуется от Класса Api.
 WebLarekApi предназначен для получения данных карточек с сервера и отправки данных на сервер.
 
-Реализуется на основе интерфейса IWebLarekApi и типов ProductItem, ApiListResponse<Type>, OrderDetails:
+Реализуется на основе интерфейса IWebLarekApi и типов ProductItem, ApiListResponse<Type>:
 
 ```
 interface IWebLarekApi {
 	cdn: string;
-	order: ApiListResponse<string> & OrderDetails;
-	contactForm: ContactForm;
-	deliveryForm: DeliveryForm;
-	basket: Basket;
-	basketModel: BasketModel;
-	success: Success;
 	getCardList(): Promise<ProductItem[]>;
-	orderPurchase(): void;
+	orderPurchase(order: ApiListResponse<string> & OrderDetails): void;
+}
+```
+
+```
+type ProductItem = {
+	id: string
+  description: string
+  image: string
+  title: string
+  category: string
+	price: number
+}
+```
+
+```
+type ApiListResponse<Type> = {
+	total: number;
+	items: Type[];
+}
+```
+
+**Предоставляет поля и методы:**
+
+Поля:
+
+- `cdn: string` - используется для формирования полного пути к изображениям при их отображении в приложении.
+
+Методы:
+
+- `getCardList(): ProductItem[]` - Получает массив данных карточек с сервера и возвращает его. Каждый элемент массива представляет объект с данными карточки товара.
+
+- `orderPurchase(order: ApiListResponse<string> & OrderDetails): void` - отправляет put-запрос на сервер с заказом.
+
+### Класс BasketModel:
+
+BasketModel отвечает за хранение данных корзины и предоставляет методы для работы с ней.
+
+Реализован на основе интерфейса и типов ProductItem, ApiListResponse<Type>, OrderDetails:
+
+```
+interface IBasketModel {
+	order: ApiListResponse<string> & OrderDetails
+	basketItems: ProductItem[]
+	addToBasket(item: ProductItem): void
+	removeFromBasket(item: ProductItem): void
+	getBasketItemsLength(): string
+	getCardIndex(item: ProductItem): string
+	clearBasket(): void
+	getCardsIds(): void
 }
 ```
 
@@ -193,51 +236,19 @@ type OrderDetails = {
 
 Поля:
 
-- `cdn: string` - используется для формирования полного пути к изображениям при их отображении в приложении.
-- `order: ApiListResponse<string> & OrderDetails` - полная информация о заказе.
-- `contactForm: ContactForm` - экземпляр класса ContactForm.
-- `deliveryForm: DeliveryForm` - экземпляр класса DeliveryForm.
-- `basket: Basket` - экземпляр класса Basket.
-- `basketModel: BasketModel` - экземпляр класса BasketModel.
-- `success: Success` - экземпляр класса Success.
-
-Методы:
-
-- `getCardList(): ProductItem[]` - Получает массив данных карточек с сервера и возвращает его. Каждый элемент массива представляет объект с данными карточки товара.
-
-- `orderPurchase(): void` - отправляет put-запрос на сервер с заказом.
-
-### Класс BasketModel:
-
-BasketModel отвечает за хранение данных корзины и предоставляет методы для работы с ней.
-
-Реализован на основе интерфейса и типа ProductItem:
-
-```
-interface IBasketModel {
-	basket: ProductItem[]
-	addToBasket(item: ProductItem): void
-	removeFromBasket(item: ProductItem): void
-	clearBasket(): void
-    }
-```
-
-**Предоставляет поля и методы:**
-
-Поля:
-
 - `basket: ProductItem[]` - Поле для хранения элементов корзины. Это массив объектов ProductItem, каждый из которых представляет товар в корзине.
-- `basket: Basket` - экземпляр класса Basket.
-- `page: Page` - экземпляр класса Page.
-- `contentModal: ContentModal` - экземпляр класса ContentModal.
+- `order: ApiListResponse<string> & OrderDetails` - полная информация о заказе.
 
 Методы:
 
 - `addToBasket(item: ProductItem): void` - Добавляет указанный товар item в корзину.
-
 - `removeFromBasket(id: string): void` - Удаляет указанный товар item из корзины.
-
+- `getBasketItemsLength(): string` - возвращает длину basket.
 - `clearBasket(): void` - Очищает корзину от всех товаров.
+- `getCardIndex(item: ProductItem): string` - возвращает индекс карточки.
+- private `addCardIdToOrder(item: ProductItem): void` - добавляет id карточки в заказ.
+- private `removeCardIdFromOrder(item: ProductItem): void` - удаляет id карточки из заказа.
+- private `clearOrder(): void` - очищает заказ.
 
 #### Класс CatalogModel:
 
@@ -285,14 +296,14 @@ interface ICard {
 	price: HTMLSpanElement
 	button?: HTMLButtonElement
 	index?: HTMLElement
-	actions: IActions
+	handleCardOpen: ICatalogCardHandler
 	render(data: ProductItem): HTMLElement
 }
 ```
 
 ```
-interface IActions {
-	onClick(evt:MouseEvent): void
+interface ICatalogCardHandler {
+	handleCardOpen: () => void;
 }
 ```
 
@@ -308,7 +319,7 @@ interface IActions {
 - `price: HTMLSpanElement` - Цена карточки.
 - `button?: HTMLButtonElement` - Кнопка у карточки (необязательное).
 - `index?: HTMLElement` - Индекс карточки (необязательное).
-- `actions: IActions` - Колбэк при клике.
+- `handlerOpenCard: ICatalogCardHandler;` - Колбэк при клике.
 
 Методы:
 
@@ -324,15 +335,8 @@ Modal представляет собой класс абстрактного м
 interface IModal {
 	container: HTMLElement;
 	closeButton: HTMLElement
-	actions: IActions
 	show(content: HTMLElement): void
 	close(): void
-}
-```
-
-```
-interface IActions {
-	onClick(evt:MouseEvent): void;
 }
 ```
 
@@ -342,12 +346,10 @@ interface IActions {
 
 - `container: HTMLDivElement` - контейнер с модальным окном.
 - `closeButton: HTMLElement` - кнопка для закрытия модального окна.
-- `actions: IActions` - Колбэк при клике.
 
 Методы:
 
 - `show(content: HTMLElement): void` - служит для открытия модального окна.
-
 - `close(): void` - служит для закрытия модального окна.
 
 ### Класс ContentModal
@@ -364,7 +366,6 @@ interface IContentModal {
 	content: HTMLElement;
 	modalContent: HTMLElement;
 	button: HTMLButtonElement;
-	page: Page;
 	show(content: HTMLElement): void;
 	close(): void;
 	setButton(button: HTMLButtonElement, actions: IActions): void
@@ -378,7 +379,6 @@ interface IContentModal {
 - `container: HTMLDivElement` - контент для вставки в модальное окно.
 - `modalContent: HTMLElement` - модальное окно.
 - `button: HTMLButtonElement` - кнопка.
-- `page: Page` - экземпляр класса Page.
 
 Методы:
 
@@ -410,7 +410,6 @@ interface IBasket {
 	counterTotalCost(): number;
 	updateBasket(): void;
 	setCards(): void;
-	changeButtonActivity(): void;
 }
 ```
 
@@ -432,7 +431,7 @@ interface IBasket {
 - `counterTotalCost(): number` - метод для расчета общей стоимости корзины.
 - `setCards(): void` - устанавливает карточки в корзину.
 - `updateBasket(): void` - обновляет содержимое корзины.
-- `changeButtonActivity(): void` - меняет активность кнопки на основании содержимого.
+- private `changeButtonActivity(): void` - меняет активность кнопки на основании содержимого.
 
 ### Класс ContactForm
 
@@ -447,10 +446,8 @@ interface IContactForm {
 	inputPhone: HTMLInputElement;
 	buttonPay: HTMLButtonElement;
 	error: HTMLElement;
-	webLarekApi: WebLarekApi;
 	toggleButtonActivity(): void;
 	clearContactForms(): void;
-	addToOrder(): void;
 	addPhoneMask(): void;
 }
 ```
@@ -464,18 +461,14 @@ interface IContactForm {
 - `inputPhone: HTMLInputElement` - поле ввода номера телефона.
 - `buttonPay: HTMLButtonElement` - кнопка "Оплатить".
 - `error: HTMLElement` - элемент для показа текста ошибки.
-- `clearContactForms(): void` - очищает формы связи.
-- `webLarekApi: WebLarekApi` - экземпляр класса WebLarekApi.
 
 Методы:
 
 - `toggleButtonActivity(): void` - переключает активность кнопки "Оплатить" в зависимости от условий.
-
-- `addToOrder(): void` - добавляет данные форм в заказ.
-
 - `clearContactForms(): void` - очищает формы.
-
 - `addPhoneMask(): void` - добавляет маску в форму для ввода номера телефона.
+- `getInputEmailValue(): string` - получает значение поля с почтой.
+- `getInputPhoneValue(): string` - получает значение поля с телефоном.
 
 ### Класс DeliveryForm
 
@@ -495,7 +488,7 @@ interface IDeliveryForm {
 	toggleButtonActivity(): void;
 	toggleButtonAltActivity(): void;
 	clearDeliveryForm(): void;
-	addToOrder(): void;
+	getInputAddressValue(): string;
 }
 ```
 
@@ -509,19 +502,14 @@ interface IDeliveryForm {
 - `buttonCash: HTMLButtonElement` - кнопка "Оплата за наличные".
 - `buttonNext: HTMLButtonElement` - кнопка "Далее".
 - `error: HTMLElement` - элемент для показа текста ошибки.
-- `webLarekApi: WebLarekApi` - экземпляр класса WebLarekApi.
 
 Методы:
 
 - `toggleButtonActivity(): void` - переключает активность кнопки "Далее" в зависимости от условий.
-
 - `toggleButtonCardActivity(): void` - переключает активность кнопки "Карта".
-
 - `toggleButtonCardActivity(): void` - переключает активность кнопки "Наличные".
-
 - `clearDeliveryForm(): void` - очищает форму доставки.
-
-- `addToOrder(): void` - добавляет данные кнопки и формы в заказ.
+- `getInputAddressValue(): string` - получает значение поля с адресом.
 
 ### Класс Success
 
@@ -562,7 +550,7 @@ interface IPage {
 	catalog: HTMLElement
 	pageWrapper: HTMLElement
 	basketButton: HTMLButtonElement
-	updateCounter(): void
+	updateCounter(basketLength: string): void
 	setCatalog(items: HTMLElement[]): void
 	lockPage(): void
 	unlockPage(): void

@@ -22,133 +22,125 @@ const orderTemplate = ensureElement<HTMLTemplateElement>('#order');
 const contactsTemplate = ensureElement<HTMLTemplateElement>('#contacts');
 const successTemplate = ensureElement<HTMLTemplateElement>('#success');
 const modal = ensureElement<HTMLDivElement>('#modal-container');
+const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 
 // Экземпляры классов.
 const webLarekApi = new WebLarekApi(CDN_URL, API_URL);
 const catalogModel = new CatalogModel();
 const page = new Page({
-	onClick: () => {
+	handleBasketOpen: () => {
 		eventEmitter.emit('Basket:open');
 	},
 });
 const eventEmitter = new EventEmitter();
-const contentModal = new ContentModal(modal, page, {
-	onClick: () => eventEmitter.emit('Modal:close'),
+const contentModal = new ContentModal(modal, {
+	handleModalClose: () => eventEmitter.emit('Modal:close'),
 });
-const deliveryForm = new DeliveryForm(
-	orderTemplate,
-	{ onClick: () => eventEmitter.emit('Button-card:active') },
-	{ onClick: () => eventEmitter.emit('Button-cash:active') },
-	{ onInput: () => eventEmitter.emit('Input:change') },
-	{ onClick: () => eventEmitter.emit('ContactForm:open') },
-	webLarekApi
-);
-webLarekApi.deliveryForm = deliveryForm;
-const contactForm = new ContactForm(
-	contactsTemplate,
-	{
-		onClick: () => eventEmitter.emit('Success:open'),
-	},
-	{
-		onInput: () => eventEmitter.emit('Input:triggered'),
-	},
-	webLarekApi
-);
-webLarekApi.contactForm = contactForm;
+const deliveryForm = new DeliveryForm(orderTemplate, {
+	handleButtonCard: () => eventEmitter.emit('Button-card:active'),
+	handleButtonCash: () => eventEmitter.emit('Button-cash:active'),
+	handleToggleButton: () => eventEmitter.emit('Input:change'),
+	handleNext: () => eventEmitter.emit('ContactForm:open'),
+});
+const contactForm = new ContactForm(contactsTemplate, {
+	handleSuccessOpen: () => eventEmitter.emit('Success:open'),
+	handleToggleButtonActivity: () => eventEmitter.emit('Input:triggered'),
+});
 const success = new Success(successTemplate, {
-	onClick: () => eventEmitter.emit('Success:close'),
+	handleSuccessClose: () => eventEmitter.emit('Success:close'),
 });
-webLarekApi.success = success;
-const basketModel = new BasketModel(
-	page,
-	contentModal,
-	deliveryForm,
-	contactForm
-);
-page.basketModel = basketModel;
-webLarekApi.basketModel = basketModel;
+const basketModel = new BasketModel();
 
 const basket = new Basket(
 	basketTemplate,
 	basketModel,
-	webLarekApi,
-	{ onClick: () => eventEmitter.emit('DeliveryForm:open') },
+	{ handleOpenDeliveryForm: () => eventEmitter.emit('DeliveryForm:open') },
 	eventEmitter
 );
 
-basketModel.basket = basket;
-webLarekApi.basket = basket;
-
 // Отображение всех карточек на странице.
-webLarekApi.getCardList().then((cards) => {
-	catalogModel.addToCatalog(cards);
+webLarekApi
+	.getCardList()
+	.then((cards) => {
+		catalogModel.addToCatalog(cards);
 
-	const renderedCards = catalogModel.catalog.map((card) => {
-		const catalogCard = new Card(catalogCardTemplate, {
-			onClick: () => eventEmitter.emit('Card:open', card),
+		const renderedCards = catalogModel.catalog.map((card) => {
+			const catalogCard = new Card(catalogCardTemplate, {
+				handleCardOpen: () => eventEmitter.emit('Card:open', card),
+			});
+
+			return catalogCard.render(card);
 		});
 
-		return catalogCard.render(card);
+		page.setCatalog(renderedCards);
+	})
+	.catch((error) => {
+		console.log(`Произошла ошибка: ${error}`);
 	});
-
-	page.setCatalog(renderedCards);
-});
 
 // Действие при открытии карточки.
 eventEmitter.on('Card:open', (card: ProductItem) => {
 	const previewCard = new Card(previewCardTemplate);
 	const renderedPreviewCard = previewCard.render(card);
 
-	const buttonAddToBasket = ensureElement<HTMLButtonElement>(
-		'.card__button',
-		renderedPreviewCard
-	);
-	contentModal.setButton(buttonAddToBasket, {
-		onClick: () => eventEmitter.emit('Basket:addItem', card),
+	contentModal.setButton(previewCard.buttonAddToBasket, {
+		handleAddItemToBasket: () => eventEmitter.emit('Basket:addItem', card),
 	});
 
-	if (previewCard.title.textContent === 'Мамка-таймер') {
-		buttonAddToBasket.setAttribute('disabled', 'true');
-		buttonAddToBasket.textContent = 'Данный продукт купить нельзя';
-	}
-
-	if (previewCard.title.textContent === card.title) {
-		if (basketModel.basketItems.find((item) => item.id === card.id)) {
-			buttonAddToBasket.setAttribute('disabled', 'true');
-			buttonAddToBasket.textContent = 'Данный продукт купить нельзя';
-		} else if (previewCard.title.textContent !== 'Мамка-таймер') {
-			buttonAddToBasket.removeAttribute('disabled');
-			buttonAddToBasket.textContent = 'В корзину';
-		}
-	}
-
+	previewCard.updateAddToCartButton(card, previewCard, basketModel);
 	contentModal.show(renderedPreviewCard);
+	page.lockPage();
 });
 
 //Действие при закрытии модального окна.
 eventEmitter.on('Modal:close', () => {
 	contentModal.close();
+	page.unlockPage();
 });
 
 // Действие при нажатии на кнопку "В корзину".
 eventEmitter.on('Basket:addItem', (card: ProductItem) => {
 	basketModel.addToBasket(card);
+
+	basket.cardsBasket = basketModel.basketItems.map((item: ProductItem) => {
+		const basketCard = new Card(cardBasketTemplate, undefined, {
+			handleCardDelete: () => eventEmitter.emit('Card:delete', item),
+		});
+		return basketCard.render(item, basketModel.getCardIndex(item));
+	});
+
+	basket.updateBasket();
+	page.updateCounter(basketModel.getBasketItemsLength());
+	contentModal.close();
+	page.unlockPage();
 });
 
 // Действие при нажатии на корзину.
 eventEmitter.on('Basket:open', () => {
-	basket.changeButtonActivity();
 	contentModal.show(basket.basket);
+	page.lockPage();
 });
 
 // Действие удаления карточки в корзине по клику.
 eventEmitter.on('Card:delete', (item: ProductItem) => {
 	basketModel.removeFromBasket(item);
+
+	basket.cardsBasket = basketModel.basketItems.map((item: ProductItem) => {
+		const basketCard = new Card(cardBasketTemplate, undefined, {
+			handleCardDelete: () => eventEmitter.emit('Card:delete', item),
+		});
+		return basketCard.render(item, basketModel.getCardIndex(item));
+	});
+
+	basket.updateBasket();
+	page.updateCounter(basketModel.getBasketItemsLength());
 });
 
 // Действие открытия модального окна с формой доставки.
 eventEmitter.on('DeliveryForm:open', () => {
+	basketModel.order.total = basket.counterTotalCost();
 	contentModal.show(deliveryForm.deliveryFormContent);
+	page.lockPage();
 });
 
 // Действие добавления 'класса активности' кнопке buttonCard.
@@ -170,7 +162,10 @@ eventEmitter.on('Input:change', () => {
 
 // Действие открытия модального окна с формой контактов.
 eventEmitter.on('ContactForm:open', () => {
+	basketModel.order.payment = deliveryForm.getButtonTextContent();
+	basketModel.order.address = deliveryForm.getInputAddressValue();
 	contentModal.show(contactForm.contactFormContent);
+	page.lockPage();
 });
 
 // Действие при изменении полей ввода почты и телефона.
@@ -181,11 +176,21 @@ eventEmitter.on('Input:triggered', () => {
 
 // Действие открытия модального окна с успешной покупкой.
 eventEmitter.on('Success:open', () => {
-	webLarekApi.orderPurchase();
+	basketModel.order.email = contactForm.getInputEmailValue();
+	basketModel.order.phone = contactForm.getInputPhoneValue();
+	webLarekApi.orderPurchase(basketModel.order);
+	success.setOrderDescription(basket.basketPrice);
+	basketModel.clearBasket();
+	basket.updateBasket();
+	page.updateCounter(basketModel.getBasketItemsLength());
+	contactForm.ClearContactForms();
+	deliveryForm.clearDeliveryForm();
 	contentModal.show(success.successContent);
+	page.lockPage();
 });
 
 // Действие закрытия модального окна с успешной покупкой.
 eventEmitter.on('Success:close', () => {
 	contentModal.close();
+	page.unlockPage();
 });

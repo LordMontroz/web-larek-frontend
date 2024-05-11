@@ -1,18 +1,15 @@
-import { IActions, IContentModal } from '../types';
+import { IContentModal, IContentModalHandler, IModalHandler } from '../types';
 import { ensureElement } from '../utils/utils';
-import { Page } from './Page';
 import { Modal } from './common/Modal';
 
 export class ContentModal extends Modal implements IContentModal {
 	content: HTMLElement;
 	modalContent: HTMLElement;
 	button: HTMLButtonElement;
-	page: Page;
 
-	constructor(modalContainer: HTMLElement, page: Page, actions?: IActions) {
-		super(modalContainer, actions);
+	constructor(modalContainer: HTMLElement, handler?: IModalHandler) {
+		super(modalContainer, handler);
 		this.modalContent = ensureElement('.modal__content', modalContainer);
-		this.page = page;
 	}
 
 	show(content: HTMLElement): void {
@@ -20,12 +17,10 @@ export class ContentModal extends Modal implements IContentModal {
 		this.setContent(content);
 		this.modalContent.append(this.content);
 		super.show(content);
-		this.page.lockPage();
 	}
 
 	close(): void {
 		super.close();
-		this.page.unlockPage();
 		this.clearModalContent();
 	}
 
@@ -33,9 +28,9 @@ export class ContentModal extends Modal implements IContentModal {
 		this.content = content;
 	}
 
-	setButton(button: HTMLButtonElement, actions: IActions): void {
+	setButton(button: HTMLButtonElement, handler: IContentModalHandler): void {
 		this.button = button;
-		this.button.addEventListener('click', actions.onClick);
+		this.button.addEventListener('click', handler.handleAddItemToBasket);
 	}
 
 	private clearModalContent(): void {
