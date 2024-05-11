@@ -1,4 +1,5 @@
 import { BasketModel } from '../components/BasketModel';
+import { ApiListResponse } from '../components/base/api';
 
 export type ProductItem = {
 	id: string;
@@ -19,12 +20,13 @@ export interface IActionInput {
 
 export interface IWebLarekApi {
 	getCardList(): Promise<ProductItem[]>;
+	orderPurchase(order: ApiListResponse<string>): void;
 }
 
 export interface IBasketModel {
 	basket: ProductItem[];
 	addToBasket(item: ProductItem): void;
-	removeFromBasket(id: string): void;
+	removeFromBasket(item: ProductItem): void;
 	clearBasket(): void;
 }
 
@@ -68,10 +70,10 @@ export interface IBasket {
 	cardsBasket: HTMLElement[];
 	basketList: HTMLElement;
 	basketModel: BasketModel;
-	counterTotalCost(cardPrice: number): void
-	updateBasket(): void
-	setCards(items: HTMLElement[]): void
-	changeButtonActivity(): void
+	counterTotalCost(cardPrice: number): void;
+	updateBasket(): void;
+	setCards(items: HTMLElement[]): void;
+	changeButtonActivity(): void;
 }
 
 export interface IForm {
@@ -84,7 +86,7 @@ export interface IContactForm {
 	inputEmail: HTMLInputElement;
 	inputPhone: HTMLInputElement;
 	buttonPay: HTMLButtonElement;
-	toggleButtonActivity(): void
+	toggleButtonActivity(): void;
 }
 
 export interface IDeliveryForm {
@@ -100,7 +102,7 @@ export interface ISuccess {
 	successContent: HTMLElement;
 	button: HTMLButtonElement;
 	orderSuccessDescription: HTMLParagraphElement;
-	setOrderDescription(sum:HTMLElement): void
+	setOrderDescription(sum: HTMLElement): void;
 }
 
 export interface IPage {
@@ -109,6 +111,7 @@ export interface IPage {
 	pageWrapper: HTMLElement;
 	basketButton: HTMLButtonElement;
 	updateCounter(): void;
+	clearCounter(): void;
 	setCatalog(items: HTMLElement[]): void;
 	lockPage(): void;
 	unlockPage(): void;

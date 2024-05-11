@@ -10,16 +10,16 @@ export class BasketModel implements IBasketModel {
 		}
 	}
 
-	removeFromBasket(id: string): void {
-		this.basket.filter((card) => card.id !== id);
+	removeFromBasket(item: ProductItem): void {
+		this.basket = this.basket.filter((card) => card.id !== item.id);
 	}
 
-	getTotalCost():number {
-		return this.basket.reduce((total,amount)=>{
-			return total + amount.price
-		},0)
+	getTotalCost(): number {
+		return this.basket.reduce((total, amount) => {
+			return total + amount.price;
+		}, 0);
 	}
-	
+
 	clearBasket(): void {
 		this.basket = [];
 	}

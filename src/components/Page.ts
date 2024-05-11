@@ -19,7 +19,10 @@ export class Page implements IPage {
 		let currentValue: number = parseInt(this.counter.textContent);
 		currentValue++;
 		this.counter.textContent = currentValue.toString();
-		console.log(this.counter);
+	}
+
+	clearCounter(): void {
+		this.counter.textContent = '0';
 	}
 
 	setCatalog(items: HTMLElement[]): void {

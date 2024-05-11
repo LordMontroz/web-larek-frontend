@@ -120,7 +120,10 @@ eventEmitter.on('Basket:open', () => {
 });
 
 // Действие удаления карточки в корзине по клику.
-eventEmitter.on('Card:delete', () => {
+eventEmitter.on('Card:delete', (item: ProductItem) => {
+	basketModel.removeFromBasket(item);
+	basket.updateBasket();
+	basket.changeButtonActivity();
 	basket.counterTotalCost();
 });
 
@@ -128,21 +131,24 @@ eventEmitter.on('Card:delete', () => {
 eventEmitter.on('DeliveryForm:open', () => {
 	contentModal.clearModalContent();
 	contentModal.setContent(deliveryForm.deliveryFormContent);
+	deliveryForm.buttonCard.classList.toggle('button_alt-active');
 	contentModal.show();
 });
 
 // Действие добавления 'класса активности' кнопке buttonCard.
 eventEmitter.on('Button-card:active', () => {
-	if (!deliveryForm.buttonCash.classList.contains('button_alt-active')) {
+	if (deliveryForm.buttonCash.classList.contains('button_alt-active')) {
 		deliveryForm.buttonCard.classList.toggle('button_alt-active');
+		deliveryForm.buttonCash.classList.toggle('button_alt-active');
 	}
 	deliveryForm.toggleButtonActivity();
 });
 
 // Действие добавления 'класса активности' кнопке buttonCash.
 eventEmitter.on('Button-cash:active', () => {
-	if (!deliveryForm.buttonCard.classList.contains('button_alt-active')) {
+	if (deliveryForm.buttonCard.classList.contains('button_alt-active')) {
 		deliveryForm.buttonCash.classList.toggle('button_alt-active');
+		deliveryForm.buttonCard.classList.toggle('button_alt-active');
 	}
 	deliveryForm.toggleButtonActivity();
 });
@@ -176,7 +182,7 @@ eventEmitter.on('Success:open', () => {
 eventEmitter.on('Success:close', () => {
 	contentModal.clearModalContent();
 	contentModal.close();
-	page.counter.textContent = '0';
+	page.clearCounter();
 	basketModel.clearBasket();
 	basket.updateBasket();
 	basket.counterTotalCost();

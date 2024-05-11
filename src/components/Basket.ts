@@ -1,11 +1,11 @@
-import { IActions, IBasket } from '../types';
+import { IActions, IBasket, ProductItem } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 import { BasketModel } from './BasketModel';
 import { Card } from './Card';
 import { Component } from './base/components';
 import { EventEmitter } from './base/events';
 
-export class Basket extends Component<HTMLElement> {
+export class Basket extends Component<HTMLElement> implements IBasket {
 	basket: HTMLElement;
 	basketPrice: HTMLElement;
 	cardBasketTemplate: HTMLTemplateElement;
@@ -37,7 +37,7 @@ export class Basket extends Component<HTMLElement> {
 
 	setCards(): void {
 		if (this.basketList.lastChild) {
-			this.basketList.removeChild(this.basketList.lastChild);
+			this.basketList.textContent = '';
 		}
 		this.cardsBasket.forEach((item) => {
 			this.basketList.append(item);
@@ -46,9 +46,9 @@ export class Basket extends Component<HTMLElement> {
 
 	updateBasket(): void {
 		this.cardsBasket = [];
-		this.cardsBasket = this.basketModel.basket.map((item) => {
+		this.cardsBasket = this.basketModel.basket.map((item: ProductItem) => {
 			const basketCard = new Card(this.cardBasketTemplate, undefined, {
-				onClick: () => this.eventEmitter.emit('Card:delete'),
+				onClick: () => this.eventEmitter.emit('Card:delete', item),
 			});
 			return basketCard.render(item);
 		});

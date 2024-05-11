@@ -15,4 +15,8 @@ export class WebLarekApi extends Api implements IWebLarekApi {
 			data.items.map((item) => ({ ...item, image: this.cdn + item.image }))
 		);
 	}
+
+	orderPurchase(order: ApiListResponse<string>): void {
+		this.post('/order', order);
+	}
 }

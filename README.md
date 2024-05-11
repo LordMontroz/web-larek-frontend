@@ -148,6 +148,7 @@ WebLarekApi предназначен для получения данных ка
 interface IWebLarekApi {
 	cdn: string;
 	getCardList(): Promise<ProductItem[]>
+	orderPurchase(order: ApiListResponse<string>): void
 }
 ```
 
@@ -171,6 +172,7 @@ type ProductItem = {
 Методы:
 
 - `getCardList(): ProductItem[]` - Получает массив данных карточек с сервера и возвращает его. Каждый элемент массива представляет объект с данными карточки товара.
+- `orderPurchase(order: ApiListResponse<string>): void` - отправляет put-запрос на сервер с заказом.
 
 ### Класс BasketModel:
 
@@ -182,7 +184,7 @@ BasketModel отвечает за хранение данных корзины �
 interface IBasketModel {
 	basket: ProductItem[]
 	addToBasket(item: ProductItem): void
-	removeFromBasket(id: string): void
+	removeFromBasket(item: ProductItem): void
 	clearBasket(): void
     }
 ```
@@ -192,6 +194,9 @@ interface IBasketModel {
 Поля:
 
 - `basket: ProductItem[]` - Поле для хранения элементов корзины. Это массив объектов ProductItem, каждый из которых представляет товар в корзине.
+- `basket: Basket` - экземпляр класса Basket.
+- `page: Page` - экземпляр класса Page.
+- `contentModal: ContentModal` - экземпляр класса ContentModal.
 
 Методы:
 
@@ -492,6 +497,7 @@ interface IPage {
 	pageWrapper: HTMLElement
 	basketButton: HTMLButtonElement
 	updateCounter(value: number): void
+	clearCounter(): void
 	setCatalog(items: HTMLElement[]): void
 	lockPage(): void
 	unlockPage(): void
@@ -516,7 +522,7 @@ interface IPage {
 
 ## Компоненты представления(Presenter)
 
-*Архитектурный слой необходимый для связывания слоя Model и слоя View.*
+_Архитектурный слой необходимый для связывания слоя Model и слоя View._
 
 Презентером выступает основной файл index.ts, который регулирует взаимодействие между отображением и данными путем подписки на события через брокер событий (экземпляр класса EventEmitter).
 
