@@ -10,8 +10,8 @@ import { Card, BasketItem } from './components/Card';
 import { Modal } from './components/common/BasketModal';
 import { Basket } from './components/common/Basket';
 import { ICardItem, IOrder } from './types';
-import { OrderContacts } from './components/ContactOrder';
-import { OrderPayments } from './components/PaymentOrder';
+import { OrderContacts } from './components/OrderContacts';
+import { OrderPayments } from './components/OrderPayments';
 import { Success } from './components/common/Success';
 
 const events = new EventEmitter();
