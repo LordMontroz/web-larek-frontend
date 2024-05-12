@@ -1,18 +1,16 @@
 import './scss/styles.scss';
 import { API_URL, CDN_URL } from './utils/constants';
-import { CatalogModel } from './components/CatalogModel';
 import { WebLarekApi } from './components/WebLarekApi';
-import { BasketModel } from './components/BasketModel';
+import { BasketModel } from './components/base/BasketModel';
 import { Card } from './components/Card';
 import { Page } from './components/Page';
 import { ensureElement } from './utils/utils';
 import { EventEmitter } from './components/base/Events';
-import { ContentModal } from './components/ContentModal';
 import { ProductItem } from './types';
-import { Basket } from './components/Basket';
-import { DeliveryForm } from './components/DeliveryForm';
-import { ContactForm } from './components/ContactForm';
-import { Success } from './components/Success';
+import { Basket } from './components/common/Basket';
+import { DeliveryForm } from './components/PaymentOrder';
+import { ContactForm } from './components/ContactOrder';
+import { Success } from './components/common/Success';
 
 // Шаблоны и константы.
 const catalogCardTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');

@@ -3,8 +3,8 @@ import {
 	IBasketModel,
 	IBasketModelHandler,
 	OrderDetails,
-} from '../types/index';
-import { ProductItem } from '../types/index';
+} from '../../types/index';
+import { ProductItem } from '../../types/index';
 
 export class BasketModel implements IBasketModel {
 	basketItems: ProductItem[] = [];

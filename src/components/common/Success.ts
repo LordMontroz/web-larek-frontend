@@ -1,5 +1,5 @@
-import { ISuccess, ISuccessHandler } from '../types';
-import { cloneTemplate, ensureElement } from '../utils/utils';
+import { ISuccess, ISuccessHandler } from '../../types';
+import { cloneTemplate, ensureElement } from '../../utils/utils';
 
 export class Success implements ISuccess {
 	successContent: HTMLElement;

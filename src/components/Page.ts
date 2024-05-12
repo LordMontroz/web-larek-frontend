@@ -1,6 +1,6 @@
 import { IPage, IPageHandler } from '../types';
 import { ensureElement } from '../utils/utils';
-import { BasketModel } from './BasketModel';
+import { BasketModel } from './base/BasketModel';
 
 export class Page implements IPage {
 	counter: HTMLElement;

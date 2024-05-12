@@ -1,7 +1,7 @@
-import { IBasket, IBasketHandler } from '../types';
-import { cloneTemplate, createElement, ensureElement } from '../utils/utils';
-import { BasketModel } from './BasketModel';
-import { Component } from './base/Components';
+import { IBasket, IBasketHandler } from '../../types';
+import { cloneTemplate, createElement, ensureElement } from '../../utils/utils';
+import { BasketModel } from '../base/BasketModel';
+import { Component } from '../base/Component';
 
 export class Basket extends Component<HTMLElement> implements IBasket {
 	basket: HTMLElement;
@@ -37,7 +37,6 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 				textContent: 'Корзина пуста',
 			})
 		);
-
 	}
 
 	setCards(): void {
@@ -75,6 +74,6 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 				})
 			);
 			this.setDisabled(this.basketButton, true);
+		}
 	}
-}
 }
