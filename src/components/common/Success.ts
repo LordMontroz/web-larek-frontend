@@ -1,26 +1,33 @@
-import { ISuccess, ISuccessHandler } from '../../types';
-import { cloneTemplate, ensureElement } from '../../utils/utils';
+import { Component } from '../base/Component';
+import { ensureElement } from '../../utils/utils';
 
-export class Success implements ISuccess {
-	successContent: HTMLElement;
-	button: HTMLButtonElement;
-	orderSuccessDescription: HTMLParagraphElement;
-	orderDescription: HTMLParagraphElement;
+interface ISuccess {
+	total: number;
+}
 
-	constructor(successTemplate: HTMLTemplateElement, handler: ISuccessHandler) {
-		this.successContent = cloneTemplate(successTemplate);
-		this.button = ensureElement<HTMLButtonElement>(
+interface ISuccessActions {
+	onClick: () => void;
+}
+
+export class Success extends Component<ISuccess> {
+    protected _description: HTMLParagraphElement;
+	protected _close: HTMLElement;
+
+	constructor(container: HTMLElement, actions: ISuccessActions) {
+		super(container);
+
+        this._description = ensureElement<HTMLParagraphElement>(`.order-success__description`, container);
+		this._close = ensureElement<HTMLElement>(
 			'.order-success__close',
-			this.successContent
+			this.container
 		);
-		this.orderSuccessDescription = ensureElement<HTMLParagraphElement>(
-			'.order-success__description',
-			this.successContent
-		);
-		this.button.addEventListener('click', handler.handleSuccessClose);
+
+		if (actions?.onClick) {
+			this._close.addEventListener('click', actions.onClick);
+		}
 	}
 
-	setOrderDescription(sum: number): void {
-		this.orderSuccessDescription.textContent = `Списано ${sum} синапсов`;
-	}
+    set total(value: string) {
+        this.setText(this._description, `Списано ${value} синапсов`);
+    }
 }

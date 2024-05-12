@@ -1,82 +1,51 @@
-import { IDeliveryFormHandlers, IDeliveryForm } from '../types';
-import { cloneTemplate, ensureElement } from '../utils/utils';
+import { Form } from './common/Form';
+import { IOrderPayments } from '../types';
+import { IEvents } from './base/Events';
 
-export class DeliveryForm implements IDeliveryForm {
-	deliveryFormContent: HTMLElement;
-	inputAddress: HTMLInputElement;
-	buttonCard: HTMLButtonElement;
-	buttonCash: HTMLButtonElement;
-	buttonNext: HTMLButtonElement;
-	error: HTMLElement;
+export class OrderPayments extends Form<IOrderPayments> {
+	protected _cardButton: HTMLButtonElement;
+	protected _cashButton: HTMLButtonElement;
 
-	constructor(
-		deliveryFormTemplate: HTMLTemplateElement,
-		handlers: IDeliveryFormHandlers
-	) {
-		this.deliveryFormContent = cloneTemplate(deliveryFormTemplate);
-		this.inputAddress = this.deliveryFormContent.querySelector(
-			'input[name="address"]'
-		) as HTMLInputElement;
-		this.buttonCard = this.deliveryFormContent.querySelector(
-			'button[name="card"]'
+	constructor(container: HTMLFormElement, events: IEvents) {
+		super(container, events);
+		this._cardButton = this.container.elements.namedItem(
+			'card'
 		) as HTMLButtonElement;
-		this.buttonCash = this.deliveryFormContent.querySelector(
-			'button[name="cash"]'
+		this._cashButton = this.container.elements.namedItem(
+			'cash'
 		) as HTMLButtonElement;
-		this.buttonNext = ensureElement<HTMLButtonElement>(
-			'.order__button',
-			this.deliveryFormContent
-		);
-		this.buttonCard.addEventListener('click', handlers.handleButtonCard);
-		this.buttonCash.addEventListener('click', handlers.handleButtonCash);
-		this.buttonNext.addEventListener('click', handlers.handleNext);
-		this.inputAddress.addEventListener('input', handlers.handleToggleButton);
-		this.error = ensureElement('.form__errors', this.deliveryFormContent);
-	}
 
-	toggleButtonCardActivity(): void {
-		if (this.buttonCash.classList.contains('button_alt-active')) {
-			this.buttonCard.classList.toggle('button_alt-active');
-			this.buttonCash.classList.toggle('button_alt-active');
+		if (this._cardButton) {
+			this._cardButton.addEventListener('click', () => {
+				events.emit(`order:change payment`, {
+					payment: this._cardButton.name,
+					button: this._cardButton,
+				});
+			});
+		}
+
+		if (this._cashButton) {
+			this._cashButton.addEventListener('click', () => {
+				events.emit(`order:change payment`, {
+					payment: this._cashButton.name,
+					button: this._cashButton,
+				});
+			});
 		}
 	}
 
-	toggleButtonCashActivity(): void {
-		if (this.buttonCard.classList.contains('button_alt-active')) {
-			this.buttonCard.classList.toggle('button_alt-active');
-			this.buttonCash.classList.toggle('button_alt-active');
-		}
+	set address(value: string) {
+		(this.container.elements.namedItem('address') as HTMLInputElement).value =
+			value;
 	}
 
-	toggleButtonActivity(): void {
-		if (
-			(this.buttonCard.classList.contains('button_alt-active') ||
-				this.buttonCash.classList.contains('button_alt-active')) &&
-			this.inputAddress.value.length > 0
-		) {
-			this.buttonNext.removeAttribute('disabled');
-			this.error.textContent = '';
-		} else {
-			this.buttonNext.setAttribute('disabled', 'true');
-			this.error.textContent = 'Необходимо ввести корректный адрес';
-		}
+	togglePayment(value: HTMLElement) {
+		this.cancelPayment();
+		this.toggleClass(value, 'button_alt-active', true);
 	}
 
-	clearDeliveryForm(): void {
-		this.inputAddress.value = '';
-		this.toggleButtonActivity();
-		this.error.textContent = '';
-	}
-
-	getInputAddressValue(): string {
-		return this.inputAddress.value;
-	}
-
-	getButtonTextContent(): string {
-		if (this.buttonCard.classList.contains('button_alt-active')) {
-			return this.buttonCard.textContent;
-		} else {
-			return this.buttonCash.textContent;
-		}
+	cancelPayment() {
+		this.toggleClass(this._cardButton, 'button_alt-active', false);
+		this.toggleClass(this._cashButton, 'button_alt-active', false);
 	}
 }
