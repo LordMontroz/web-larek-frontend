@@ -2,7 +2,6 @@ import { IBasketCardHandler, ICard, ICatalogCardHandler } from '../types/index';
 import { Component } from './base/Components';
 import { ProductItem } from '../types/index';
 import { ensureElement, cloneTemplate } from '../utils/utils';
-import { CATEGORY_COLORS } from '../utils/constants';
 
 export class Card extends Component<ProductItem> implements ICard {
 	container: HTMLElement;
@@ -59,8 +58,8 @@ export class Card extends Component<ProductItem> implements ICard {
 	render(data: ProductItem, index?: string): HTMLElement {
 		this.setText(this.title, data.title);
 		this.setText(this.category, data.category);
-		
-//Объект настроек для определения цвета категорий в карточках товаров при помощит css-классов нужно вынести в файл с константами. Не забудьте типизировать этот объект.
+
+		//Объект настроек для определения цвета категорий в карточках товаров при помощит css-классов нужно вынести в файл с константами. Не забудьте типизировать этот объект.
 		if (this.category) {
 			if (this.category.textContent === 'другое') {
 				this.category.classList.add('card__category_other');

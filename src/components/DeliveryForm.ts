@@ -1,6 +1,5 @@
 import { IDeliveryFormHandlers, IDeliveryForm } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
-import { WebLarekApi } from './WebLarekApi';
 
 export class DeliveryForm implements IDeliveryForm {
 	deliveryFormContent: HTMLElement;

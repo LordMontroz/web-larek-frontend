@@ -2,7 +2,7 @@ import { IModal, IModalHandler } from '../../types';
 import { ensureElement } from '../../utils/utils';
 
 export abstract class Modal implements IModal {
-    container: HTMLElement;
+	container: HTMLElement;
 	closeButton: HTMLElement;
 
 	constructor(container: HTMLElement, handler?: IModalHandler) {
