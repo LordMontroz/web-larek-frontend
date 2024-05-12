@@ -9,7 +9,4 @@ export const categoryMap = new Map([
 	['другое', 'card__category_other'],
 ]);
 
-export const REGULAR_EMAIL = /\w+@\w+\.\w+/i;
-export const REGULAR_PHONE = /\+7\s\(\d{3}\)\s\d{3}\-\d{2}\-\d{2}/i;
-
 export const settings = {};
