@@ -1,5 +1,5 @@
 import { IBasket, IBasketHandler } from '../types';
-import { cloneTemplate, ensureElement } from '../utils/utils';
+import { cloneTemplate, createElement, ensureElement } from '../utils/utils';
 import { BasketModel } from './BasketModel';
 import { Component } from './base/Components';
 
@@ -31,6 +31,13 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 				handler.handleOpenDeliveryForm
 			);
 		}
+		this.setDisabled(this.basketButton, true);
+		this.basketList.replaceChildren(
+			createElement<HTMLParagraphElement>('p', {
+				textContent: 'Корзина пуста',
+			})
+		);
+
 	}
 
 	setCards(): void {
@@ -58,10 +65,16 @@ export class Basket extends Component<HTMLElement> implements IBasket {
 	}
 
 	private changeButtonActivity(): void {
-		if (this.cardsBasket.length === 0) {
-			this.basketButton.setAttribute('disabled', 'true');
+		if (this.cardsBasket.length) {
+			this.basketList.replaceChildren(...this.cardsBasket);
+			this.setDisabled(this.basketButton, false);
 		} else {
-			this.basketButton.removeAttribute('disabled');
-		}
+			this.basketList.replaceChildren(
+				createElement<HTMLParagraphElement>('p', {
+					textContent: 'Корзина пуста',
+				})
+			);
+			this.setDisabled(this.basketButton, true);
 	}
+}
 }
