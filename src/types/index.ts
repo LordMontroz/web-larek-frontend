@@ -29,12 +29,7 @@ export interface IOrder extends IContactOrder, IDeliveryOrder {
 	items: string[];
 }
 
-export type OrderDetails = {
-	payment: string;
-	email: string;
-	phone: string;
-	address: string;
-};
+export type OrderDetails = IContactOrder & IDeliveryOrder;
 
 export interface IDeliveryFormHandlers {
 	handleButtonCard: () => void;
@@ -79,7 +74,7 @@ export interface IBasketCardHandler {
 export interface IBasketModelHandler {
 	handleUpdateBasket: () => void;
 }
-
+// Нужно поправить типизацию входного значения -  у вас есть тип для заказа и типизацию возвращаемого значения - этот тип надо написать.
 export interface IWebLarekApi {
 	cdn: string;
 	getCardList(): Promise<ProductItem[]>;
@@ -146,11 +141,6 @@ export interface IBasket {
 	counterTotalCost(): number;
 	updateBasket(): void;
 	setCards(items: HTMLElement[]): void;
-}
-
-export interface IForm {
-	validate(): void;
-	sumbit(): void;
 }
 
 export interface IContactForm {

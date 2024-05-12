@@ -1,8 +1,7 @@
 import { IBasket, IBasketHandler } from '../types';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 import { BasketModel } from './BasketModel';
-import { Component } from './base/components';
-import { EventEmitter } from './base/events';
+import { Component } from './base/Components';
 
 export class Basket extends Component<HTMLElement> implements IBasket {
 	basket: HTMLElement;

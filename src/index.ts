@@ -6,7 +6,7 @@ import { BasketModel } from './components/BasketModel';
 import { Card } from './components/Card';
 import { Page } from './components/Page';
 import { ensureElement } from './utils/utils';
-import { EventEmitter } from './components/base/events';
+import { EventEmitter } from './components/base/Events';
 import { ContentModal } from './components/ContentModal';
 import { ProductItem } from './types';
 import { Basket } from './components/Basket';

@@ -1,6 +1,6 @@
 import { IOrder, IWebLarekApi } from '../types/index';
 import { ProductItem } from '../types/index';
-import { Api } from '../components/base/api';
+import { Api } from './base/Api';
 import { ApiListResponse } from '../types/index';
 
 export class WebLarekApi extends Api implements IWebLarekApi {

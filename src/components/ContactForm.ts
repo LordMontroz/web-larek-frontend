@@ -57,7 +57,7 @@ export class ContactForm implements IContactForm {
 			this.inputPhone.value = maskedValue;
 		}
 	}
-
+//Все регулярки надо вынести в файл с константами, а здесь только использовать их.
 	toggleButtonActivity(): void {
 		const emailRegex = /\w+@\w+\.\w+/i;
 		const phoneRegex = /\+7\s\(\d{3}\)\s\d{3}\-\d{2}\-\d{2}/i;
