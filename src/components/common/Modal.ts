@@ -13,8 +13,10 @@ export abstract class Modal implements IModal {
 
 	show(content: HTMLElement): void {
 		this.container.classList.add('modal_active');
+
 	}
 	close(): void {
 		this.container.classList.remove('modal_active');
+		
 	}
 }

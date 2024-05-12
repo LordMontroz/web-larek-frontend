@@ -1,4 +1,5 @@
 import { IContactForm, IContactFormHandlers } from '../types';
+import { REGULAR_EMAIL, REGULAR_PHONE } from '../utils/constants';
 import { cloneTemplate, ensureElement } from '../utils/utils';
 
 export class ContactForm implements IContactForm {
@@ -59,8 +60,8 @@ export class ContactForm implements IContactForm {
 	}
 	//Все регулярки надо вынести в файл с константами, а здесь только использовать их.
 	toggleButtonActivity(): void {
-		const emailRegex = /\w+@\w+\.\w+/i;
-		const phoneRegex = /\+7\s\(\d{3}\)\s\d{3}\-\d{2}\-\d{2}/i;
+		const emailRegex = REGULAR_EMAIL;
+		const phoneRegex = REGULAR_PHONE;
 		if (
 			emailRegex.test(this.inputEmail.value) &&
 			phoneRegex.test(this.inputPhone.value)
