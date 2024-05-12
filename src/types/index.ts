@@ -1,14 +1,3 @@
-import { BasketModel } from '../components/base/BasketModel';
-
-export type ProductItem = {
-	id: string;
-	description: string;
-	image: string;
-	title: string;
-	category: string;
-	price: number | null;
-};
-
 export enum Category {
 	'софт-скил',
 	'другое',

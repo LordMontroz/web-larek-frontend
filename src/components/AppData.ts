@@ -105,15 +105,15 @@ export class AppState extends Model<IAppState> {
 	validateOrder() {
 		const errors: typeof this.formErrors = {};
 		if (!this.order.email) {
-			errors.email = 'Необходимо указать email';
+			errors.email = 'Пожалуйста укажите корректные данные(email)';
 		}
 
 		if (!this.order.phone) {
-			errors.phone = 'Необходимо указать телефон';
+			errors.phone = 'Пожалуйста укажите корректные данные(телефон)';
 		}
 
 		if (!this.order.address) {
-			errors.address = 'Необходимо указать адрес доставки';
+			errors.address = 'Пожалуйста укажите корректные данные(адрес доставки)';
 		}
 
 		if (!this.order.payment) {
