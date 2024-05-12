@@ -58,7 +58,7 @@ export class ContactForm implements IContactForm {
 			this.inputPhone.value = maskedValue;
 		}
 	}
-	//Все регулярки надо вынести в файл с константами, а здесь только использовать их.
+
 	toggleButtonActivity(): void {
 		const emailRegex = REGULAR_EMAIL;
 		const phoneRegex = REGULAR_PHONE;
@@ -70,7 +70,7 @@ export class ContactForm implements IContactForm {
 			this.error.textContent = '';
 		} else {
 			this.buttonPay.setAttribute('disabled', 'true');
-			this.error.textContent = 'Необходимо ввести корректные данные';
+			this.error.textContent = 'Необходимо указать корректный телефон и email';
 		}
 	}
 

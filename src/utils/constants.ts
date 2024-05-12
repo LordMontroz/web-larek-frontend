@@ -8,8 +8,8 @@ export const CATEGORY_COLORS = <Record<string, string>>{
 	'хард-скил': 'hard',
 	другое: 'other',
 };
+
 export const REGULAR_EMAIL = /\w+@\w+\.\w+/i;
 export const REGULAR_PHONE = /\+7\s\(\d{3}\)\s\d{3}\-\d{2}\-\d{2}/i;
-
 
 export const settings = {};

@@ -58,7 +58,7 @@ export class DeliveryForm implements IDeliveryForm {
 			this.error.textContent = '';
 		} else {
 			this.buttonNext.setAttribute('disabled', 'true');
-			this.error.textContent = 'Необходимо ввести корректные данные';
+			this.error.textContent = 'Необходимо ввести корректный адрес';
 		}
 	}
 
