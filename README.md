@@ -145,10 +145,10 @@ _Архитектурный слой необходимый для хранен�
 Наследуется от Класса Api.
 WebLarekApi предназначен для получения данных карточек с сервера и отправки данных на сервер.
 
-Реализуется на основе интерфейсов ILarekApi, IOrder, IOrderResult, ICardItem и типа ApiListResponse<Type>:
+Реализуется на основе интерфейсов IWebLarekApi, IOrder, IOrderResult, ICardItem и типа ApiListResponse<Type>:
 
 ```
-interface ILarekApi {
+interface IWebLarekApi {
 	getCardList: () => Promise<ICardItem[]>;
 	orderProducts: (order: IOrder) => Promise<IOrderResult>;
 }
