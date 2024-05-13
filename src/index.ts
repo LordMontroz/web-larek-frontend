@@ -1,7 +1,7 @@
 import './scss/styles.scss';
 
 import { API_URL, CDN_URL } from './utils/constants';
-import { LarekApi } from './components/WebLarekApi';
+import { WebLarekApi } from './components/WebLarekApi';
 import { EventEmitter } from './components/base/Events';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { AppState, CatalogChangeEvent } from './components/AppData';
@@ -15,7 +15,7 @@ import { OrderPayments } from './components/OrderPayments';
 import { Success } from './components/common/Success';
 
 const events = new EventEmitter();
-const api = new LarekApi(CDN_URL, API_URL);
+const api = new WebLarekApi(CDN_URL, API_URL);
 
 // Шаблоны
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
