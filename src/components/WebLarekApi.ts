@@ -1,5 +1,5 @@
-import { Api, ApiListResponse } from './base/Api';
-import { IOrder, IOrderResult, ICardItem } from '../types';
+import { Api } from './base/Api';
+import { IOrder, IOrderResult, ICardItem, ApiListResponse} from '../types';
 
 interface IWebLarekApi {
 	getCardList: () => Promise<ICardItem[]>;

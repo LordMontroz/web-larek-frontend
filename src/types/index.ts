@@ -6,6 +6,11 @@ export enum Category {
 	'хард-скил',
 }
 
+export type ApiListResponse<Type> = {
+	total: number;
+	items: Type[];
+};
+
 export interface ICardItem {
 	id: string;
 	title: string;
@@ -14,11 +19,6 @@ export interface ICardItem {
 	category?: Category;
 	price: number | null;
 	buttonName?: string;
-}
-
-export interface ICardList {
-	total: number;
-	items: ICardItem[];
 }
 
 export interface IOrderContacts {

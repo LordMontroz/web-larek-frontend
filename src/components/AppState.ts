@@ -1,4 +1,4 @@
-import { Model } from './base/BasketModel';
+import { Model } from './base/Model';
 import { FormErrors, IAppState, ICardItem, IOrder } from '../types';
 
 export type CatalogChangeEvent = {
